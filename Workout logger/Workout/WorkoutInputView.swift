@@ -23,6 +23,7 @@ struct WorkoutInputView: View {
 
             WorkoutInputViewWithWeightHeader()
             WorkoutInputRowWithWeight(targetValue: 4, targetWeight: 60, value: $sets, weight: $weight)
+            WorkoutInputRow(targetValue: 4, value: $sets)
         }
         .padding(16)
         .frame(maxWidth: .infinity)
@@ -54,6 +55,46 @@ struct WorkoutInputViewWithWeightHeader: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .font(.system(size: 13))
+        .foregroundStyle(Color(.Colors.Text._40))
+    }
+}
+
+struct WorkoutInputRow: View {
+    let targetValue: Int
+    @Binding var value: Int
+    @State private var targetAchieved = false
+    @State private var targetValueAchieved = false
+
+    private let successColor = Color(.Colors.success)
+
+    var body: some View {
+        HStack(spacing: 8) {
+            HStack {
+                Text("1")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                WorkoutInputTextField(placeholder: "12", targetAchieved: $targetValueAchieved, value: $value)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .onChange(of: value) {
+                        checkIfTargetAchieved()
+                    }
+            }
+            .frame(maxWidth: .infinity)
+
+            Image(systemName: "checkmark")
+                .frame(width: 40, height: 40)
+                .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
+                .clipShape(.rect(cornerRadius: 8))
+                .onChange(of: value) {
+                    checkIfTargetAchieved()
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
+    private func checkIfTargetAchieved() {
+        targetValueAchieved = value >= targetValue
+        targetAchieved = targetValueAchieved
     }
 }
 

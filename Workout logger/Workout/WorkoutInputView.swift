@@ -7,8 +7,3 @@
 
 import SwiftUI
 
-struct WorkoutInputView: View {
-    var body: some View {
-        Text("")
-    }
-}

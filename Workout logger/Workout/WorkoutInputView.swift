@@ -10,6 +10,7 @@ import SwiftUI
 struct WorkoutInputView: View {
     @State private var sets: Int = 5
     @State private var weight: Int = 12
+    @State private var topSet: Int = 1
 
     var body: some View {
         VStack(spacing: 12) {
@@ -24,6 +25,14 @@ struct WorkoutInputView: View {
             WorkoutInputViewWithWeightHeader()
             WorkoutInputRowWithWeight(targetValue: 4, targetWeight: 60, value: $sets, weight: $weight)
             WorkoutInputRow(targetValue: 4, value: $sets)
+            Divider()
+            HStack(spacing: 8){
+                Text("Top set:")
+                    .font(.system(size: 15))
+                Text(String(topSet))
+                    .font(.system(size: 20, weight: .bold))
+            }
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
         .frame(maxWidth: .infinity)

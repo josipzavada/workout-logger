@@ -13,6 +13,33 @@ struct WorkoutInputView: View {
     @State private var topSet: Int = 1
 
     var body: some View {
+        HStack {
+            inputCard
+                .frame(maxHeight: .infinity)
+            VStack {
+                DottedLine()
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
+                    .frame(width: 1, height: 20)
+                    .foregroundColor(Color(.Colors.neutralLine))
+                    .padding(.top, 2)
+                Text("M1")
+                    .font(.system(size: 13))
+                    .opacity(0.3)
+                    .padding(6)
+                    .background(Color(.Colors.paperDark))
+                    .clipShape(.circle)
+                DottedLine()
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
+                    .frame(width: 1)
+                    .foregroundColor(Color(.Colors.neutralLine))
+            }
+            .frame(maxHeight: .infinity)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    @ViewBuilder
+    var inputCard: some View {
         VStack(spacing: 12) {
             Text("Pull-ups")
                 .foregroundStyle(Color(.Colors.Text._100))
@@ -39,8 +66,18 @@ struct WorkoutInputView: View {
         .background(.white)
         .clipShape(.rect(cornerRadius: 16))
         .overlay( /// apply a rounded border
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 16)
                 .stroke(Color(.Colors.paperDark), lineWidth: 1)
         )
+    }
+}
+
+struct DottedLine: Shape {
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: 0, y: rect.height))
+        return path
     }
 }

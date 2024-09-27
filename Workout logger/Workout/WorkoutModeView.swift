@@ -35,7 +35,7 @@ struct WorkoutModeView: View {
         .background(.white)
         .clipShape(.rect(cornerRadius: 16))
         .overlay( /// apply a rounded border
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 16)
                 .stroke(Color(.Colors.paperDark), lineWidth: 1)
         )
     }

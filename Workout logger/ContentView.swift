@@ -9,12 +9,15 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             WorkoutModeView()
+            WorkoutInputView()
+            WorkoutInputView()
             WorkoutInputView()
             Spacer()
         }
-        .padding()
+        .padding(12)
+        .background(Color(.Colors.paper))
     }
 }
 

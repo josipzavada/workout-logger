@@ -7,6 +7,33 @@
 
 import SwiftUI
 
+struct WorkoutResultRow: View {
+    let targetValue: Int
+    let value: Int
+
+    private let successColor = Color(.Colors.success)
+
+    var body: some View {
+        let targetValueAchieved = value >= targetValue
+        HStack(spacing: 8) {
+            HStack {
+                Text("1")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(String(value))
+                    .foregroundStyle(targetValueAchieved ? .green : .black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(maxWidth: .infinity)
+
+            Image(systemName: "checkmark")
+                .frame(width: 40, height: 40)
+                .background(Color(targetValueAchieved ? .Colors.success : .Colors.neutralG30))
+                .clipShape(.rect(cornerRadius: 8))
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+}
+
 struct WorkoutResultRowWithWeight: View {
     let targetValue: Int
     let targetWeight: Int
@@ -74,8 +101,8 @@ struct WorkoutResultsView: View {
 
             WorkoutInputViewHeader(showWeight: true)
             WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 60)
-            WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 60)
-            WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 60)
+            WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 40)
+            WorkoutResultRow(targetValue: 4, value: 5)
             Divider()
             HStack(spacing: 8){
                 Text("Top set:")

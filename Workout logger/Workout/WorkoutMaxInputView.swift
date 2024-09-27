@@ -1,34 +1,31 @@
 //
-//  WorkoutModeView.swift
+//  WorkoutMaxInputView.swift
 //  Workout logger
 //
-//  Created by Josip Zavada on 26.09.2024..
+//  Created by Josip Zavada on 27.09.2024..
 //
 
 import SwiftUI
 
-struct WorkoutModeView: View {
+struct WorkoutMaxInputView: View {
+
+    @State private var maxValue = 0
+
     var body: some View {
         VStack(spacing: 12) {
-            Text("EMOM")
+            Text("1RM")
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Divider()
                 .frame(height: 1)
                 .foregroundStyle(Color(.Colors.paperDark))
-            HStack {
-                Image(systemName: "repeat")
-                Text("EMOM 12 rounds")
-                    .font(.system(size: 15, weight: .semibold))
-            }
-            .foregroundStyle(Color(.Colors.Text._60))
-            .frame(maxWidth: .infinity, alignment: .leading)
-            VStack(spacing: 8) {
-                WorkoutView()
-                WorkoutView()
-                WorkoutView()
-            }
+
+            Text("Weight")
+                .font(.system(size: 13))
+                .foregroundStyle(Color(.Colors.Text._40))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            WorkoutInputTextField(placeholder: "", targetAchieved: .constant(false), showKg: true, value: $maxValue)
         }
         .padding(16)
         .frame(maxWidth: .infinity)
@@ -38,6 +35,5 @@ struct WorkoutModeView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color(.Colors.paperDark), lineWidth: 1)
         )
-        .padding(.vertical, 4)
     }
 }

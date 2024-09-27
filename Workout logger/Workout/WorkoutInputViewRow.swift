@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct WorkoutInputViewWithWeightHeader: View {
+struct WorkoutInputViewHeader: View {
+    var showWeight: Bool
     var body: some View {
         HStack(spacing: 8) {
             HStack {
@@ -21,10 +22,13 @@ struct WorkoutInputViewWithWeightHeader: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity)
-            VStack {
+            if (showWeight) {
                 Text("Weight")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                EmptyView()
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .font(.system(size: 13))
         .foregroundStyle(Color(.Colors.Text._40))
@@ -34,6 +38,7 @@ struct WorkoutInputViewWithWeightHeader: View {
 struct WorkoutInputRow: View {
     let targetValue: Int
     @Binding var value: Int
+
     @State private var targetAchieved = false
     @State private var targetValueAchieved = false
 
@@ -74,6 +79,7 @@ struct WorkoutInputRowWithWeight: View {
     let targetWeight: Int
     @Binding var value: Int
     @Binding var weight: Int
+
     @State private var targetAchieved = false
     @State private var targetWeightAchieved = false
     @State private var targetValueAchieved = false
@@ -89,7 +95,7 @@ struct WorkoutInputRowWithWeight: View {
             }
             .frame(maxWidth: .infinity)
             HStack(spacing: 8) {
-                WorkoutInputTextField(placeholder: "12", targetAchieved: $targetWeightAchieved, showKg: true, value: $weight)
+                WorkoutInputTextField(placeholder: "12", unit: "kg", targetAchieved: $targetWeightAchieved, value: $weight)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .onChange(of: value) {
                         checkIfTargetAchieved()
@@ -117,8 +123,8 @@ struct WorkoutInputRowWithWeight: View {
 
 struct WorkoutInputTextField: View {
     let placeholder: String
+    var unit: String? = nil
     @Binding var targetAchieved: Bool
-    var showKg: Bool = false
     @Binding var value: Int
 
     private let successTextBorderColor = Color(.Colors.green40)
@@ -127,8 +133,8 @@ struct WorkoutInputTextField: View {
     var body: some View {
         HStack(spacing: 4) {
             TextField(placeholder, value: $value, formatter: NumberFormatter())
-            if showKg {
-                Text("kg")
+            if let unit {
+                Text(unit)
                     .font(.system(size: 13))
                     .foregroundStyle(Color(.Colors.Text._40))
             }

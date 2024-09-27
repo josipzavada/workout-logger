@@ -46,7 +46,7 @@ struct WorkoutInputView: View {
                 .frame(height: 1)
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            WorkoutInputViewWithWeightHeader()
+            WorkoutInputViewHeader(showWeight: true)
             WorkoutInputRowWithWeight(targetValue: 4, targetWeight: 60, value: $sets, weight: $weight)
             WorkoutInputRow(targetValue: 4, value: $sets)
             Divider()

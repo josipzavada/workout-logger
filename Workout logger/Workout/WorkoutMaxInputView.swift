@@ -25,7 +25,7 @@ struct WorkoutMaxInputView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(Color(.Colors.Text._40))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            WorkoutInputTextField(placeholder: "", targetAchieved: .constant(false), showKg: true, value: $maxValue)
+            WorkoutInputTextField(placeholder: "", unit: "kg", targetAchieved: .constant(false), value: $maxValue)
         }
         .padding(16)
         .frame(maxWidth: .infinity)

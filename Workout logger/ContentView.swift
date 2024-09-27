@@ -9,14 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack(spacing: 0) {
-            WorkoutModeView()
-            WorkoutMaxInputView()
-            WorkoutInputView()
-            Spacer()
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    WorkoutModeView()
+                    WorkoutMaxInputView()
+                    WorkoutInputView()
+                    Spacer()
+                }
+                .padding(12)
+                .background(Color(.Colors.paper))
+                .clipShape(.rect(cornerRadius: 16))
+            }
+            .navigationTitle("Workout")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding(12)
-        .background(Color(.Colors.paper))
     }
 }
 

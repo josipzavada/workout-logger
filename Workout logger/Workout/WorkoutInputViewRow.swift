@@ -96,7 +96,6 @@ struct WorkoutInputRowWithWeight: View {
             .frame(maxWidth: .infinity)
             HStack(spacing: 8) {
                 WorkoutInputTextField(placeholder: "12", unit: "kg", targetAchieved: $targetWeightAchieved, value: $weight)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .onChange(of: value) {
                         checkIfTargetAchieved()
                     }

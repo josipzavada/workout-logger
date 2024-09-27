@@ -13,9 +13,7 @@ struct WorkoutLogItem: View {
     let action: () -> Void
 
     var body: some View {
-        Button {
-            action()
-        } label: {
+        NavigationLink(destination: WorkoutLogView()) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())

@@ -25,14 +25,11 @@ struct WorkoutInputView: View {
         HStack(spacing: 4) {
             inputCard
                 .padding(.vertical, 4)
-                .frame(maxHeight: .infinity)
 
             if (superSetOrder != .none) {
                 workoutPath
-                    .frame(maxHeight: .infinity)
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
@@ -43,7 +40,6 @@ struct WorkoutInputView: View {
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Divider()
-                .frame(height: 1)
                 .foregroundStyle(Color(.Colors.paperDark))
 
             WorkoutInputViewHeader(showWeight: true)

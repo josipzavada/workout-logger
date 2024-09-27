@@ -10,17 +10,28 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    WorkoutModeView()
-                    WorkoutMaxInputView()
-                    WorkoutInputView()
-                    Spacer()
+            VStack {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        WorkoutModeView()
+                        WorkoutMaxInputView()
+                        WorkoutInputView()
+                        WorkoutInputView()
+                        WorkoutInputView()
+                        Spacer()
+                    }
+                    .padding(12)
                 }
-                .padding(12)
-                .background(Color(.Colors.paper))
-                .clipShape(.rect(cornerRadius: 16))
+                .frame(maxHeight: .infinity)
+                Button {
+                    print("Saved")
+                } label: {
+                    Text("Save")
+                }
+                .buttonStyle(WorkoutLogButton())
+
             }
+            .background(Color(.Colors.paper))
             .navigationTitle("Workout")
             .navigationBarTitleDisplayMode(.inline)
         }

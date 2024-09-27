@@ -66,38 +66,32 @@ struct WorkoutLogs: View {
     }
 
     var body: some View {
-
-        NavigationStack {
-            VStack {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                            print("asdf")
-                        }
-                        WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                            print("asdf")
-                        }
-                        WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                            print("asdf")
-                        }
-                        WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                            print("asdf")
-                        }
+        VStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
+                        print("asdf")
                     }
-                    .padding(12)
+                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
+                        print("asdf")
+                    }
+                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
+                        print("asdf")
+                    }
+                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
+                        print("asdf")
+                    }
                 }
-                .frame(maxHeight: .infinity)
-                Button {
-                    print("Added new")
-                } label: {
-                    Text("Add new")
-                }
-                .buttonStyle(WorkoutLogButton())
-
+                .padding(12)
             }
-            .background(Color(.Colors.paper))
-            .navigationTitle("Workout logs")
+            .frame(maxHeight: .infinity)
+            NavigationLink(destination: NewWorkoutLogView()) {
+                Text("Add new")
+            }
+            .buttonStyle(WorkoutLogButton())
         }
+        .background(Color(.Colors.paper))
+        .navigationTitle("Logs")
     }
 }
 

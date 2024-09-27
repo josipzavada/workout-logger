@@ -13,9 +13,7 @@ struct WorkoutItem: View {
     let action: () -> Void
 
     var body: some View {
-        Button {
-            action()
-        } label: {
+        NavigationLink(destination: WorkoutLogs()) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())
@@ -80,6 +78,7 @@ struct WorkoutPlan: View {
             .background(Color(.Colors.paper))
             .navigationTitle("My workout plan")
         }
+        .tint(.black)
     }
 }
 

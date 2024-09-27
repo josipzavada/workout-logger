@@ -7,33 +7,30 @@
 
 import SwiftUI
 
+enum SuperSetOrder {
+    case first
+    case last
+    case middle
+    case none
+}
+
 struct WorkoutInputView: View {
     @State private var sets: Int = 5
     @State private var weight: Int = 12
     @State private var topSet: Int = 1
 
+    var superSetOrder: SuperSetOrder = .none
+
     var body: some View {
-        HStack {
+        HStack(spacing: 4) {
             inputCard
+                .padding(.vertical, 4)
                 .frame(maxHeight: .infinity)
-            VStack {
-                DottedLine()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
-                    .frame(width: 1, height: 20)
-                    .foregroundColor(Color(.Colors.neutralLine))
-                    .padding(.top, 2)
-                Text("M1")
-                    .font(.system(size: 13))
-                    .opacity(0.3)
-                    .padding(6)
-                    .background(Color(.Colors.paperDark))
-                    .clipShape(.circle)
-                DottedLine()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
-                    .frame(width: 1)
-                    .foregroundColor(Color(.Colors.neutralLine))
+
+            if (superSetOrder != .none) {
+                workoutPath
+                    .frame(maxHeight: .infinity)
             }
-            .frame(maxHeight: .infinity)
         }
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -70,10 +67,47 @@ struct WorkoutInputView: View {
                 .stroke(Color(.Colors.paperDark), lineWidth: 1)
         )
     }
+
+    @ViewBuilder
+    var workoutPath: some View {
+
+        let isFirst = superSetOrder == .first
+        let isLast = superSetOrder == .last
+
+        VStack {
+            if (!isFirst) {
+                DottedLine()
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
+                    .frame(width: 1, height: 20)
+                    .foregroundColor(Color(.Colors.neutralLine))
+                    .padding(.top, 2)
+            } else {
+                Rectangle()
+                    .opacity(0)
+                    .frame(width: 1, height: 15)
+
+            }
+            Text("M1")
+                .font(.system(size: 13))
+                .opacity(0.3)
+                .padding(6)
+                .background(Color(.Colors.paperDark))
+                .clipShape(.circle)
+            if (!isLast) {
+                DottedLine()
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
+                    .frame(width: 1)
+                    .foregroundColor(Color(.Colors.neutralLine))
+            } else {
+                Rectangle()
+                    .frame(width: 1)
+                    .opacity(0)
+            }
+        }
+    }
 }
 
 struct DottedLine: Shape {
-
     func path(in rect: CGRect) -> Path {
         var path = Path()
         path.move(to: CGPoint(x: 0, y: 0))

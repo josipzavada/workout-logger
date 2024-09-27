@@ -38,5 +38,6 @@ struct WorkoutModeView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color(.Colors.paperDark), lineWidth: 1)
         )
+        .padding(.vertical, 4)
     }
 }

@@ -17,6 +17,7 @@ enum SuperSetOrder {
 struct WorkoutInputView: View {
 
     let workoutName: String
+    let valueUnit: VolumeUnit
     @Binding var workoutSetLogs: [WorkoutSetLog]
     @State var topSet: Int = 1
 
@@ -44,7 +45,7 @@ struct WorkoutInputView: View {
                 .foregroundStyle(Color(.Colors.paperDark))
 
             let shouldHideWeight = workoutSetLogs.allSatisfy { $0.targetWeight == nil }
-            WorkoutInputViewHeader(showWeight: !shouldHideWeight)
+            WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
             ForEach(workoutSetLogs.indices, id: \.self) { index in
                 WorkoutInputRowWithWeight(

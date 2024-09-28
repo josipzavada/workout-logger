@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct WorkoutInputViewHeader: View {
-    var showWeight: Bool
+    let volumeUnit: String
+    let showWeight: Bool
     var body: some View {
         HStack(spacing: 8) {
             HStack {
@@ -17,7 +18,7 @@ struct WorkoutInputViewHeader: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack {
-                    Text("Reps")
+                    Text(volumeUnit.capitalized)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }

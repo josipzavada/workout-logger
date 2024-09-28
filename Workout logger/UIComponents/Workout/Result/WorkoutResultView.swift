@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct WorkoutResultsView: View {
+
+    let valueUnit: VolumeUnit
+
     @State private var sets: Int = 5
     @State private var weight: Int = 12
     @State private var topSet: Int = 1
@@ -35,7 +38,7 @@ struct WorkoutResultsView: View {
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            WorkoutInputViewHeader(showWeight: true)
+            WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: true)
             WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 60)
             WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 40)
             WorkoutResultRow(targetValue: 4, value: 5)

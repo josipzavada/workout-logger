@@ -14,7 +14,7 @@ struct WorkoutLogView: View {
                 VStack(spacing: 0) {
 //                    WorkoutModeView()
                     WorkoutMaxView()
-                    WorkoutResultsView()
+                    WorkoutResultsView(valueUnit: VolumeUnit.rep)
                 }
                 .padding(12)
             }

@@ -57,6 +57,7 @@ struct WorkoutSet {
 struct WorkoutLog {
     let name: String
     let volumeUnit: VolumeUnit
+    var oneRepMax: Int?
     var setLogs: [WorkoutSetLog]
 }
 
@@ -64,7 +65,6 @@ struct WorkoutSetLog: Identifiable {
     let id = UUID().uuidString
     let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?
-    let oneRepMax: Int?
     var volume: Int?
     var weight: Int?
 

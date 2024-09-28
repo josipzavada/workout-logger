@@ -18,6 +18,7 @@ struct WorkoutInputView: View {
 
     let workoutName: String
     let valueUnit: VolumeUnit
+    @Binding var oneRepMax: Int?
     @Binding var workoutSetLogs: [WorkoutSetLog]
     @State var topSet: Int = 1
 
@@ -52,7 +53,7 @@ struct WorkoutInputView: View {
                     set: index + 1,
                     targetValue: workoutSetLogs[index].targetVolume,
                     targetWeight: workoutSetLogs[index].targetWeight,
-                    oneRepMax: workoutSetLogs[index].oneRepMax,
+                    oneRepMax: $oneRepMax,
                     value: $workoutSetLogs[index].volume,
                     weight: $workoutSetLogs[index].weight
                 )

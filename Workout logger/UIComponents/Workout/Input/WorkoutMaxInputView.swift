@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct WorkoutMaxInputView: View {
-
-    @State private var maxValue: Int? = 0
+    let title: String
+    @Binding var maxValue: Int?
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("1RM")
+            Text("\(title) 1RM")
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -25,7 +25,7 @@ struct WorkoutMaxInputView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(Color(.Colors.Text._40))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            WorkoutInputTextField(placeholder: "", unit: "kg", targetAchieved: .constant(false), value: $maxValue)
+            WorkoutInputTextField(placeholder: "0", unit: "kg", targetAchieved: .constant(false), value: $maxValue)
         }
         .padding(16)
         .frame(maxWidth: .infinity)

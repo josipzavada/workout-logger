@@ -40,7 +40,7 @@ struct WorkoutInputRowWithWeight: View {
     let set: Int
     let targetValue: WorkoutTarget
     let targetWeight: WorkoutTarget?
-    let oneRepMax: Int?
+    @Binding var oneRepMax: Int?
     @Binding var value: Int?
     @Binding var weight: Int?
 

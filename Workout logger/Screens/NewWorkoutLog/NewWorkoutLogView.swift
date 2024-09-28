@@ -18,8 +18,13 @@ struct NewWorkoutLogView: View {
                     if let workoutPreviewViewModel = viewModel.workoutPreviewViewModel {
                         WorkoutModeView(viewModel: workoutPreviewViewModel)
                     }
+                    ForEach(viewModel.maxInputs.indices, id: \.self) { index in
+                        if let maxInputViewModel = viewModel.maxInputs[index] {
+                            WorkoutMaxInputView(title: maxInputViewModel.title, maxValue: $viewModel.workouts[index].oneRepMax)
+                        }
+                    }
                     ForEach(viewModel.workouts.indices, id: \.self) { index in
-                        WorkoutInputView(workoutName: viewModel.workouts[index].name, valueUnit: viewModel.workouts[index].volumeUnit, workoutSetLogs: $viewModel.workouts[index].setLogs)
+                        WorkoutInputView(workoutName: viewModel.workouts[index].name, valueUnit: viewModel.workouts[index].volumeUnit, oneRepMax: $viewModel.workouts[index].oneRepMax, workoutSetLogs: $viewModel.workouts[index].setLogs)
                     }
                 }
                 .padding(12)

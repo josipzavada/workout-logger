@@ -22,16 +22,17 @@ struct WorkoutPreviewViewModel: Identifiable {
 class NewWorkoutLogViewModel: ObservableObject {
     var workoutPreviewViewModel: WorkoutModeViewModel?
     @Published var workouts: [WorkoutLog] = []
+    @Published var oneRepMax = 0
 
     init() {
         let workoutPlanItem1 = WorkoutPlanItem(type: .pyramid, workouts: [
             Workout(name: "Barbell deadlift", sets: [
-                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(8), targetWeight: nil),
-                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(6), targetWeight: nil),
-                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(4), targetWeight: nil),
-                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(2), targetWeight: nil),
-                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(2), targetWeight: nil),
-                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(10), targetWeight: nil)
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(8), targetWeight: .exact(60)),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(6), targetWeight: .exact(60)),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(4), targetWeight: .exact(60)),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(2), targetWeight: .exact(60)),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(2), targetWeight: .exact(60)),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(10), targetWeight: .exact(60))
             ])
         ])
         displayPyramidWorkout(workoutPlanItem: workoutPlanItem1)
@@ -55,7 +56,7 @@ class NewWorkoutLogViewModel: ObservableObject {
         let title = "Pyramid: \(workout.name)"
 
         let setLogs = workout.sets.map {
-            WorkoutSetLog(volumeUnit: $0.volumeUnit, targetVolume: $0.targetVolume, targetWeight: $0.targetWeight, volume: nil, weight: nil)
+            WorkoutSetLog(volumeUnit: $0.volumeUnit, targetVolume: $0.targetVolume, targetWeight: $0.targetWeight, oneRepMax: oneRepMax, volume: nil, weight: nil)
         }
         let workoutLog = WorkoutLog(name: workout.name, setLogs: setLogs)
         workouts = [workoutLog]

@@ -50,6 +50,7 @@ struct WorkoutInputView: View {
                     set: index + 1,
                     targetValue: workoutSetLogs[index].targetVolume,
                     targetWeight: workoutSetLogs[index].targetWeight,
+                    oneRepMax: workoutSetLogs[index].oneRepMax,
                     value: $workoutSetLogs[index].volume,
                     weight: $workoutSetLogs[index].weight
                 )

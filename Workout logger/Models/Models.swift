@@ -53,6 +53,7 @@ struct WorkoutSetLog: Identifiable {
     let volumeUnit: VolumeUnit
     let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?
+    let oneRepMax: Int?
     var volume: Int?
     var weight: Int?
 

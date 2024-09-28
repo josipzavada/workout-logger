@@ -39,6 +39,7 @@ struct WorkoutInputRowWithWeight: View {
     let set: Int
     let targetValue: WorkoutTarget
     let targetWeight: WorkoutTarget?
+    let oneRepMax: Int?
     @Binding var value: Int?
     @Binding var weight: Int?
 
@@ -79,9 +80,40 @@ struct WorkoutInputRowWithWeight: View {
 
     // TODO
     private func checkIfTargetAchieved() {
-        targetValueAchieved = false
-        targetWeightAchieved = false
-        targetAchieved = false
+
+        if let value {
+            targetValueAchieved = switch targetValue {
+            case .maximum:
+                false
+            case .percentageOfMaximum(let percentage):
+                value >= percentage * (oneRepMax ?? 0)
+            case .exact(let exactTarget):
+                value >= exactTarget
+            case .interval(let minTarget, let maxTarget):
+                value >= minTarget && value <= maxTarget
+            }
+        } else {
+            targetValueAchieved = false
+        }
+
+        if let weight {
+            targetWeightAchieved = switch targetWeight {
+            case .maximum:
+                false
+            case .percentageOfMaximum(let percentage):
+                weight >= percentage * (oneRepMax ?? 0)
+            case .exact(let exactTarget):
+                weight >= exactTarget
+            case .interval(let minTarget, let maxTarget):
+                weight >= minTarget && weight <= maxTarget
+            case .none:
+                true
+            }
+        } else {
+            targetWeightAchieved = false
+        }
+
+        targetAchieved = targetValueAchieved && targetWeightAchieved
     }
 }
 

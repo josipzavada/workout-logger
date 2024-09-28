@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct WorkoutView: View {
+
+    let target: String?
+    let name: String
+
     var body: some View {
         HStack(spacing: 4) {
-            Text("12")
-                .foregroundStyle(Color(.Colors.Text._40))
-            Text("Pull-ups")
+            if let target {
+                Text(target)
+                    .foregroundStyle(Color(.Colors.Text._40))
+            }
+            Text(name)
                 .foregroundStyle(Color(.Colors.Text._100))
         }
         .padding(.vertical, 8)

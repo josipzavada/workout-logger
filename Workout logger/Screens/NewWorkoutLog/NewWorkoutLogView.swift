@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct NewWorkoutLogView: View {
+
+    @StateObject private var viewModel = NewWorkoutLogViewModel()
+
     var body: some View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    WorkoutModeView()
+                    if let workoutPreviewViewModel = viewModel.workoutPreviewViewModel {
+                        WorkoutModeView(viewModel: workoutPreviewViewModel)
+                    }
                     WorkoutMaxInputView()
                     WorkoutInputView()
                     WorkoutInputView()

@@ -12,7 +12,7 @@ struct WorkoutLogView: View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    WorkoutModeView()
+//                    WorkoutModeView()
                     WorkoutMaxView()
                     WorkoutResultsView()
                 }

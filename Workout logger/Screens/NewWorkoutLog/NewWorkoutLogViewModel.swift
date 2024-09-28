@@ -21,7 +21,7 @@ struct WorkoutPreviewViewModel: Identifiable {
 
 class NewWorkoutLogViewModel: ObservableObject {
     var workoutPreviewViewModel: WorkoutModeViewModel?
-    @Published var workouts: [Workout] = []
+    @Published var workouts: [WorkoutLog] = []
 
     init() {
         let workoutPlanItem1 = WorkoutPlanItem(type: .pyramid, workouts: [
@@ -54,11 +54,23 @@ class NewWorkoutLogViewModel: ObservableObject {
         let setTargetsString = setTargets.joined(separator: " - ")
         let title = "Pyramid: \(workout.name)"
 
-        workouts = [workout]
+        let setLogs = workout.sets.map {
+            WorkoutSetLog(volumeUnit: $0.volumeUnit, targetVolume: $0.targetVolume, targetWeight: $0.targetWeight, volume: nil, weight: nil)
+        }
+        let workoutLog = WorkoutLog(name: workout.name, setLogs: setLogs)
+        workouts = [workoutLog]
         let workoutPreviews = workouts.map({ workout in
             return WorkoutPreviewViewModel(target: nil, name: workout.name)
         })
 
         workoutPreviewViewModel = WorkoutModeViewModel(title: title, target: setTargetsString, workoutPreviews: workoutPreviews)
+    }
+
+    func saveTapped() {
+        workouts.forEach { workout in
+            workout.setLogs.forEach { workoutSet in
+                print(workoutSet.volume)
+            }
+        }
     }
 }

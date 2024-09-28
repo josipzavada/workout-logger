@@ -18,17 +18,15 @@ struct NewWorkoutLogView: View {
                     if let workoutPreviewViewModel = viewModel.workoutPreviewViewModel {
                         WorkoutModeView(viewModel: workoutPreviewViewModel)
                     }
-                    WorkoutMaxInputView()
-                    WorkoutInputView()
-                    WorkoutInputView()
-                    WorkoutInputView()
-                    Spacer()
+                    ForEach(viewModel.workouts.indices, id: \.self) { index in
+                        WorkoutInputView(workoutSetLogs: $viewModel.workouts[index].setLogs)
+                    }
                 }
                 .padding(12)
             }
             .frame(maxHeight: .infinity)
             Button {
-                print("Saved")
+                viewModel.saveTapped()
             } label: {
                 Text("Save")
             }

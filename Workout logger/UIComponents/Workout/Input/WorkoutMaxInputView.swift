@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WorkoutMaxInputView: View {
 
-    @State private var maxValue = 0
+    @State private var maxValue: Int? = 0
 
     var body: some View {
         VStack(spacing: 12) {

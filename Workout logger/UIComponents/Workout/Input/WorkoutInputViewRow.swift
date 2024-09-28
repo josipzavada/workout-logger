@@ -26,8 +26,8 @@ struct WorkoutInputViewHeader: View {
                 Text("Weight")
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                EmptyView()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+                    .frame(maxWidth: .infinity)
             }
         }
         .font(.system(size: 13))
@@ -35,50 +35,12 @@ struct WorkoutInputViewHeader: View {
     }
 }
 
-struct WorkoutInputRow: View {
-    let targetValue: Int
-    @Binding var value: Int
-
-    @State private var targetAchieved = false
-    @State private var targetValueAchieved = false
-
-    private let successColor = Color(.Colors.success)
-
-    var body: some View {
-        HStack(spacing: 8) {
-            HStack {
-                Text("1")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                WorkoutInputTextField(placeholder: "12", targetAchieved: $targetValueAchieved, value: $value)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .onChange(of: value) {
-                        checkIfTargetAchieved()
-                    }
-            }
-            .frame(maxWidth: .infinity)
-
-            Image(systemName: "checkmark")
-                .frame(width: 40, height: 40)
-                .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
-                .clipShape(.rect(cornerRadius: 8))
-                .onChange(of: value) {
-                    checkIfTargetAchieved()
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-        }
-    }
-
-    private func checkIfTargetAchieved() {
-        targetValueAchieved = value >= targetValue
-        targetAchieved = targetValueAchieved
-    }
-}
-
 struct WorkoutInputRowWithWeight: View {
-    let targetValue: Int
-    let targetWeight: Int
-    @Binding var value: Int
-    @Binding var weight: Int
+    let set: Int
+    let targetValue: WorkoutTarget
+    let targetWeight: WorkoutTarget?
+    @Binding var value: Int?
+    @Binding var weight: Int?
 
     @State private var targetAchieved = false
     @State private var targetWeightAchieved = false
@@ -89,16 +51,18 @@ struct WorkoutInputRowWithWeight: View {
     var body: some View {
         HStack(spacing: 8) {
             HStack {
-                Text("1")
+                Text(String(set))
                     .frame(maxWidth: .infinity, alignment: .leading)
                 WorkoutInputTextField(placeholder: "12", targetAchieved: $targetValueAchieved, value: $value)
             }
             .frame(maxWidth: .infinity)
             HStack(spacing: 8) {
-                WorkoutInputTextField(placeholder: "12", unit: "kg", targetAchieved: $targetWeightAchieved, value: $weight)
-                    .onChange(of: value) {
-                        checkIfTargetAchieved()
-                    }
+                if targetWeight != nil {
+                    WorkoutInputTextField(placeholder: "12", unit: "kg", targetAchieved: $targetWeightAchieved, value: $weight)
+                        .onChange(of: value) {
+                            checkIfTargetAchieved()
+                        }
+                }
 
                 Image(systemName: "checkmark")
                     .frame(width: 40, height: 40)
@@ -113,10 +77,11 @@ struct WorkoutInputRowWithWeight: View {
         }
     }
 
+    // TODO
     private func checkIfTargetAchieved() {
-        targetValueAchieved = value >= targetValue
-        targetWeightAchieved = weight >= targetWeight
-        targetAchieved = targetValueAchieved && targetWeightAchieved
+        targetValueAchieved = false
+        targetWeightAchieved = false
+        targetAchieved = false
     }
 }
 
@@ -124,7 +89,7 @@ struct WorkoutInputTextField: View {
     let placeholder: String
     var unit: String? = nil
     @Binding var targetAchieved: Bool
-    @Binding var value: Int
+    @Binding var value: Int?
 
     private let successTextBorderColor = Color(.Colors.green40)
     private let successTextBackground = Color(.Colors.green20)

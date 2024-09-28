@@ -15,9 +15,9 @@ enum SuperSetOrder {
 }
 
 struct WorkoutInputView: View {
-    @State private var sets: Int = 5
-    @State private var weight: Int = 12
-    @State private var topSet: Int = 1
+
+    @Binding var workoutSetLogs: [WorkoutSetLog]
+    @State var topSet: Int = 1
 
     var superSetOrder: SuperSetOrder = .none
 
@@ -42,9 +42,19 @@ struct WorkoutInputView: View {
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            WorkoutInputViewHeader(showWeight: true)
-            WorkoutInputRowWithWeight(targetValue: 4, targetWeight: 60, value: $sets, weight: $weight)
-            WorkoutInputRow(targetValue: 4, value: $sets)
+            let shouldHideWeight = workoutSetLogs.allSatisfy { $0.targetWeight == nil }
+            WorkoutInputViewHeader(showWeight: !shouldHideWeight)
+
+            ForEach(workoutSetLogs.indices, id: \.self) { index in
+                WorkoutInputRowWithWeight(
+                    set: index + 1,
+                    targetValue: workoutSetLogs[index].targetVolume,
+                    targetWeight: workoutSetLogs[index].targetWeight,
+                    value: $workoutSetLogs[index].volume,
+                    weight: $workoutSetLogs[index].weight
+                )
+            }
+
             Divider()
             HStack(spacing: 8){
                 Text("Top set:")

@@ -87,7 +87,7 @@ struct WorkoutInputRowWithWeight: View {
             case .maximum:
                 true
             case .percentageOfMaximum(let percentage):
-                value >= percentage * (oneRepMax ?? 0)
+                Double(value) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
             case .exact(let exactTarget):
                 value >= exactTarget
             case .interval(let minTarget, let maxTarget):
@@ -102,7 +102,7 @@ struct WorkoutInputRowWithWeight: View {
             case .maximum:
                 true
             case .percentageOfMaximum(let percentage):
-                weight >= percentage * (oneRepMax ?? 0)
+                Double(weight) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
             case .exact(let exactTarget):
                 weight >= exactTarget
             case .interval(let minTarget, let maxTarget):

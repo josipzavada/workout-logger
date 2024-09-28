@@ -22,7 +22,7 @@ struct WorkoutPreviewViewModel: Identifiable {
 class NewWorkoutLogViewModel: ObservableObject {
     var workoutPreviewViewModel: WorkoutModeViewModel?
     @Published var workouts: [WorkoutLog] = []
-    @Published var oneRepMax = 0
+    @Published var oneRepMax = 100
 
     init() {
         let workoutPlanItem1 = WorkoutPlanItem(type: .pyramid, workouts: [
@@ -67,9 +67,18 @@ class NewWorkoutLogViewModel: ObservableObject {
             ])
         ])
 
+        let workoutPlanItem4 = WorkoutPlanItem(type: .pyramid, workouts: [
+            Workout(name: "Bench press", volumeUnit: .rep, sets: [
+                WorkoutSet(targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60)),
+                WorkoutSet(targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60)),
+                WorkoutSet(targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60)),
+            ])
+        ])
+
 //        displayPyramidWorkout(workoutPlanItem: workoutPlanItem1)
 //        displayEpomWorkout(workoutPlanItem: workoutPlanItem2)
-        displaySupersetWorkout(workoutPlanItem: workoutPlanItem3)
+//        displaySupersetWorkout(workoutPlanItem: workoutPlanItem3)
+        displayTestWorkout(workoutPlanItem: workoutPlanItem4)
     }
 
     func displayPyramidWorkout(workoutPlanItem: WorkoutPlanItem) {
@@ -105,6 +114,7 @@ class NewWorkoutLogViewModel: ObservableObject {
         let numberOfRounds = workoutPlanItem.workouts.map { $0.sets.count }.reduce(0, +)
         let workoutPreviews = workoutPlanItem.workouts.map { workout in
             let targetValue = workout.sets.first?.targetVolume
+            let targetWeight = workout.sets.first?.targetWeight
             let targetValueUnit = workout.volumeUnit
 
             let areAllValueTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetValue }
@@ -128,7 +138,7 @@ class NewWorkoutLogViewModel: ObservableObject {
 
             if areAllWeightTargetsEqual {
                 workoutValueAndWeight += " "
-                switch targetValue {
+                switch targetWeight {
                 case .maximum:
                     workoutValueAndWeight += "Max kg"
                 case .exact(let exactTarget):
@@ -156,6 +166,7 @@ class NewWorkoutLogViewModel: ObservableObject {
         let areAllSetsEqual = workoutsSetsCount.allSatisfy { $0 == workoutsSetsCount.first }
 
         let targetValue = workoutPlanItem.workouts.first?.sets.first?.targetVolume
+        let targetWeight = workoutPlanItem.workouts.first?.sets.first?.targetWeight
         let targetValueUnit = workoutPlanItem.workouts.first?.volumeUnit
 
         let areAllValueTargetsEqual = workoutPlanItem.workouts.allSatisfy { workout in
@@ -190,7 +201,7 @@ class NewWorkoutLogViewModel: ObservableObject {
 
         if areAllWeightTargetsEqual {
             valueAndWeightDescription += " "
-            switch targetValue {
+            switch targetWeight {
             case .maximum:
                 valueAndWeightDescription += "Max kg"
             case .exact(let exactTarget):
@@ -210,6 +221,69 @@ class NewWorkoutLogViewModel: ObservableObject {
             }
             return WorkoutLog(name: workout.name, volumeUnit: workout.volumeUnit, setLogs: setLogs)
         }
+    }
+
+    func displayTestWorkout(workoutPlanItem: WorkoutPlanItem) {
+        guard let workout = workoutPlanItem.workouts.first else {
+            // TODO: show error
+            return
+        }
+
+        let targetValue = workout.sets.first?.targetVolume
+        let targetWeight = workout.sets.first?.targetWeight
+        let targetValueUnit = workout.volumeUnit
+
+        let areAllValueTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetValue }
+        let areAllWeightTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetWeight == targetWeight }
+
+        var workoutValueAndWeight = ""
+        if areAllValueTargetsEqual {
+            switch targetValue {
+            case .maximum:
+                workoutValueAndWeight += "Max \(targetValueUnit.name)"
+            case .percentageOfMaximum(let percentage):
+                workoutValueAndWeight += "\(percentage)% 1RM"
+            case .exact(let exactTarget):
+                workoutValueAndWeight += "\(exactTarget) \(targetValueUnit.name)"
+            case .interval(let minTarget, let maxTarget):
+                workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(targetValueUnit.name)"
+            case .none:
+                break
+            }
+        }
+
+        if areAllWeightTargetsEqual {
+            if workoutValueAndWeight != "" {
+                workoutValueAndWeight += " @ "
+            }
+            switch targetWeight {
+            case .maximum:
+                workoutValueAndWeight += "Max kg"
+            case .exact(let exactTarget):
+                workoutValueAndWeight += "\(exactTarget) kg"
+            case .interval(let minTarget, let maxTarget):
+                workoutValueAndWeight += "\(minTarget)-\(maxTarget) kg"
+            case .percentageOfMaximum(let percentage):
+                workoutValueAndWeight += "\(percentage) % 1RM"
+            case .none:
+                break
+            }
+        }
+
+        workoutValueAndWeight = "\(workout.sets.count) x \(workoutValueAndWeight)"
+
+        let title = "\(workout.name) Test"
+
+        let setLogs = workout.sets.map {
+            WorkoutSetLog(targetVolume: $0.targetVolume, targetWeight: $0.targetWeight, oneRepMax: oneRepMax, volume: nil, weight: nil)
+        }
+        let workoutLog = WorkoutLog(name: workout.name, volumeUnit: workout.volumeUnit, setLogs: setLogs)
+        workouts = [workoutLog]
+        let workoutPreviews = workouts.map({ workout in
+            return WorkoutPreviewViewModel(target: nil, name: workout.name)
+        })
+
+        workoutPreviewViewModel = WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: workoutPreviews)
     }
 
     func saveTapped() {

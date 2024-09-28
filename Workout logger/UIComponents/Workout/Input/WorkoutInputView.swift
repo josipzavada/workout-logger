@@ -16,6 +16,7 @@ enum SuperSetOrder {
 
 struct WorkoutInputView: View {
 
+    let workoutName: String
     @Binding var workoutSetLogs: [WorkoutSetLog]
     @State var topSet: Int = 1
 
@@ -35,7 +36,7 @@ struct WorkoutInputView: View {
     @ViewBuilder
     var inputCard: some View {
         VStack(spacing: 12) {
-            Text("Pull-ups")
+            Text(workoutName)
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)

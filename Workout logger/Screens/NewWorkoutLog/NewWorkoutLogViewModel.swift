@@ -35,7 +35,27 @@ class NewWorkoutLogViewModel: ObservableObject {
                 WorkoutSet(volumeUnit: .rep, targetVolume: .exact(10), targetWeight: .exact(60))
             ])
         ])
-        displayPyramidWorkout(workoutPlanItem: workoutPlanItem1)
+
+        let workoutPlanItem2 = WorkoutPlanItem(type: .emom, workouts: [
+            Workout(name: "Pull ups", sets: [
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(12), targetWeight: nil),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(12), targetWeight: nil),
+                WorkoutSet(volumeUnit: .rep, targetVolume: .exact(12), targetWeight: nil),
+            ]),
+            Workout(name: "Assault bike", sets: [
+                WorkoutSet(volumeUnit: .calorie, targetVolume: .maximum, targetWeight: nil),
+                WorkoutSet(volumeUnit: .calorie, targetVolume: .maximum, targetWeight: nil),
+                WorkoutSet(volumeUnit: .calorie, targetVolume: .maximum, targetWeight: nil),
+            ]),
+            Workout(name: "Run", sets: [
+                WorkoutSet(volumeUnit: .distance, targetVolume: .maximum, targetWeight: nil),
+                WorkoutSet(volumeUnit: .distance, targetVolume: .maximum, targetWeight: nil),
+                WorkoutSet(volumeUnit: .distance, targetVolume: .maximum, targetWeight: nil),
+            ]),
+        ])
+
+//        displayPyramidWorkout(workoutPlanItem: workoutPlanItem1)
+        displayEpomWorkout(workoutPlanItem: workoutPlanItem2)
     }
 
     func displayPyramidWorkout(workoutPlanItem: WorkoutPlanItem) {
@@ -65,6 +85,56 @@ class NewWorkoutLogViewModel: ObservableObject {
         })
 
         workoutPreviewViewModel = WorkoutModeViewModel(title: title, target: setTargetsString, workoutPreviews: workoutPreviews)
+    }
+
+    func displayEpomWorkout(workoutPlanItem: WorkoutPlanItem) {
+        let numberOfRounds = workoutPlanItem.workouts.map { $0.sets.count }.reduce(0, +)
+        let workoutPreviews = workoutPlanItem.workouts.map { workout in
+            let targetValue = workout.sets.first?.targetVolume
+            let targetValueUnit = workout.sets.first?.volumeUnit
+
+            let areAllValueTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetValue }
+            let areAllWeightTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetWeight == targetValue }
+
+            var workoutValueAndWeight = ""
+            if areAllValueTargetsEqual {
+                switch targetValue {
+                case .maximum:
+                    workoutValueAndWeight += "Max \(targetValueUnit?.name ?? "")"
+                case .percentageOfMaximum(let percentage):
+                    workoutValueAndWeight += "\(percentage)% 1RM"
+                case .exact(let exactTarget):
+                    workoutValueAndWeight += "\(exactTarget) \(targetValueUnit?.name ?? "")"
+                case .interval(let minTarget, let maxTarget):
+                    workoutValueAndWeight += "\(minTarget) - \(maxTarget) \(targetValueUnit?.name ?? "")"
+                case .none:
+                    break
+                }
+            }
+
+            if areAllWeightTargetsEqual {
+                workoutValueAndWeight += " "
+                switch targetValue {
+                case .maximum:
+                    workoutValueAndWeight += "Max kg"
+                case .exact(let exactTarget):
+                    workoutValueAndWeight += "\(exactTarget) kg"
+                case .interval(let minTarget, let maxTarget):
+                    workoutValueAndWeight += "\(minTarget) - \(maxTarget) kg"
+                case .percentageOfMaximum, .none:
+                    break
+                }
+            }
+
+            return WorkoutPreviewViewModel(target: workoutValueAndWeight, name: workout.name)
+        }
+        workoutPreviewViewModel = WorkoutModeViewModel(title: "EPOM", target: "\(numberOfRounds) rounds", workoutPreviews: workoutPreviews)
+        workouts = workoutPlanItem.workouts.map { workout in
+            let setLogs = workout.sets.map { workoutSet in
+                WorkoutSetLog(volumeUnit: workoutSet.volumeUnit, targetVolume: workoutSet.targetVolume, targetWeight: workoutSet.targetWeight, oneRepMax: oneRepMax, volume: nil, weight: nil)
+            }
+            return WorkoutLog(name: workout.name, setLogs: setLogs)
+        }
     }
 
     func saveTapped() {

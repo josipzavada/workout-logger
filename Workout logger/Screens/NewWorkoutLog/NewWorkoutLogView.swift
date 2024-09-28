@@ -19,7 +19,7 @@ struct NewWorkoutLogView: View {
                         WorkoutModeView(viewModel: workoutPreviewViewModel)
                     }
                     ForEach(viewModel.workouts.indices, id: \.self) { index in
-                        WorkoutInputView(workoutSetLogs: $viewModel.workouts[index].setLogs)
+                        WorkoutInputView(workoutName: viewModel.workouts[index].name, workoutSetLogs: $viewModel.workouts[index].setLogs)
                     }
                 }
                 .padding(12)

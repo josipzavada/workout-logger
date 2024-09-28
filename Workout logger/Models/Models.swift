@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum WorkoutTarget {
+enum WorkoutTarget: Equatable {
     case maximum
     case percentageOfMaximum(Int)
     case exact(Int)
@@ -25,6 +25,17 @@ enum VolumeUnit {
     case rep
     case calorie
     case distance
+
+    var name: String {
+        switch self {
+        case .rep:
+            return "reps"
+        case .calorie:
+            return "calories"
+        case .distance:
+            return "m"
+        }
+    }
 }
 
 struct WorkoutPlanItem {

@@ -55,12 +55,15 @@ struct WorkoutInputRowWithWeight: View {
                 Text(String(set))
                     .frame(maxWidth: .infinity, alignment: .leading)
                 WorkoutInputTextField(placeholder: "12", targetAchieved: $targetValueAchieved, value: $value)
+                    .onChange(of: value) {
+                        checkIfTargetAchieved()
+                    }
             }
             .frame(maxWidth: .infinity)
             HStack(spacing: 8) {
                 if targetWeight != nil {
                     WorkoutInputTextField(placeholder: "12", unit: "kg", targetAchieved: $targetWeightAchieved, value: $weight)
-                        .onChange(of: value) {
+                        .onChange(of: weight) {
                             checkIfTargetAchieved()
                         }
                 }
@@ -69,9 +72,6 @@ struct WorkoutInputRowWithWeight: View {
                     .frame(width: 40, height: 40)
                     .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
                     .clipShape(.rect(cornerRadius: 8))
-                    .onChange(of: weight) {
-                        checkIfTargetAchieved()
-                    }
 
             }
             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -84,7 +84,7 @@ struct WorkoutInputRowWithWeight: View {
         if let value {
             targetValueAchieved = switch targetValue {
             case .maximum:
-                false
+                true
             case .percentageOfMaximum(let percentage):
                 value >= percentage * (oneRepMax ?? 0)
             case .exact(let exactTarget):
@@ -99,7 +99,7 @@ struct WorkoutInputRowWithWeight: View {
         if let weight {
             targetWeightAchieved = switch targetWeight {
             case .maximum:
-                false
+                true
             case .percentageOfMaximum(let percentage):
                 weight >= percentage * (oneRepMax ?? 0)
             case .exact(let exactTarget):
@@ -113,7 +113,11 @@ struct WorkoutInputRowWithWeight: View {
             targetWeightAchieved = false
         }
 
-        targetAchieved = targetValueAchieved && targetWeightAchieved
+        if targetWeight == nil {
+            targetAchieved = targetValueAchieved
+        } else {
+            targetAchieved = targetValueAchieved && targetWeightAchieved
+        }
     }
 }
 

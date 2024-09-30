@@ -8,21 +8,20 @@
 import SwiftUI
 
 struct WorkoutResultsView: View {
-
+    let workoutName: String
     let valueUnit: VolumeUnit
-
-    @State private var sets: Int = 5
-    @State private var weight: Int = 12
-    @State private var topSet: Int = 1
-
-    var superSetOrder: WorkoutPathOrder = .none
+    let oneRepMax: Int?
+    let workoutSets: [WorkoutSet]
+    let topSet: Int = 1
+    var workoutPathOrder: WorkoutPathOrder = .none
+    var workoutPathLabel: String = ""
 
     var body: some View {
         HStack(spacing: 4) {
             inputCard
                 .padding(.vertical, 4)
 
-            if (superSetOrder != .none) {
+            if (workoutPathOrder != .none) {
                 workoutPath
             }
         }
@@ -30,17 +29,26 @@ struct WorkoutResultsView: View {
 
     var inputCard: some View {
         VStack(spacing: 12) {
-            Text("Pull-ups")
+            Text(workoutName)
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: true)
-            WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 60)
-            WorkoutResultRowWithWeight(targetValue: 4, targetWeight: 60, value: 5, weight: 40)
-            WorkoutResultRow(targetValue: 4, value: 5)
+            let shouldHideWeight = workoutSets.allSatisfy { $0.targetWeight == nil }
+            WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
+
+            ForEach(Array(workoutSets.enumerated()), id: \.offset) { (index, workoutSet) in
+                WorkoutResultRowWithWeight(
+                    set: index + 1,
+                    targetValue: workoutSet.targetVolume,
+                    targetWeight: workoutSet.targetWeight,
+                    oneRepMax: oneRepMax,
+                    value: workoutSets[index].volume,
+                    weight: workoutSets[index].weight
+                )
+            }
             Divider()
             HStack(spacing: 8){
                 Text("Top set:")
@@ -60,8 +68,8 @@ struct WorkoutResultsView: View {
     @ViewBuilder
     var workoutPath: some View {
 
-        let isFirst = superSetOrder == .first
-        let isLast = superSetOrder == .last
+        let isFirst = workoutPathOrder == .first
+        let isLast = workoutPathOrder == .last
 
         VStack {
             if (!isFirst) {

@@ -8,23 +8,35 @@
 import SwiftUI
 
 struct WorkoutLogView: View {
-    var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-//                    WorkoutModeView()
-                    WorkoutMaxView()
-                    WorkoutResultsView(valueUnit: VolumeUnit.rep)
-                }
-                .padding(12)
-            }
-            Button {
-                print("Saved")
-            } label: {
-                Text("Save")
-            }
-            .buttonStyle(WorkoutLogButton())
 
+    let viewModel = WorkoutLogViewModel()
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
+                    WorkoutModeView(viewModel: workoutPreviewViewModel)
+                }
+                ForEach(Array(viewModel.maxViews.enumerated()), id: \.offset) { index, maxViewModel in
+                    if let maxViewModel {
+                        WorkoutMaxView(viewModel: maxViewModel)
+                    }
+                }
+                ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { (index, workout) in
+
+                    let workoutPathOrder = WorkoutModeFormatter.workoutPathOrder(index: index, numberOfWorkouts: viewModel.workouts.count)
+
+                    WorkoutResultsView(
+                        workoutName: workout.name,
+                        valueUnit: workout.volumeUnit,
+                        oneRepMax: viewModel.workouts[index].oneRepMax,
+                        workoutSets: viewModel.workouts[index].sets,
+                        workoutPathOrder: viewModel.workoutProgressLabel != nil ? workoutPathOrder : .none,
+                        workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
+                    )
+                }
+            }
+            .padding(12)
         }
         .background(Color(.Colors.paper))
         .navigationTitle("Log")

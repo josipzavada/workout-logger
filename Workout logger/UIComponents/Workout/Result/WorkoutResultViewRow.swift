@@ -35,31 +35,91 @@ struct WorkoutResultRow: View {
 }
 
 struct WorkoutResultRowWithWeight: View {
-    let targetValue: Int
-    let targetWeight: Int
-    let value: Int
-    let weight: Int
+
+    let set: Int
+    let targetValue: WorkoutTarget
+    let targetWeight: WorkoutTarget?
+    let oneRepMax: Int?
+    let value: Int?
+    let weight: Int?
+
+    private var targetAchieved = false
+    private var targetWeightAchieved = false
+    private var targetValueAchieved = false
 
     private let successColor = Color(.Colors.success)
 
+    init(set: Int, targetValue: WorkoutTarget, targetWeight: WorkoutTarget? = nil, oneRepMax: Int? = nil, value: Int? = nil, weight: Int? = nil) {
+        self.set = set
+        self.targetValue = targetValue
+        self.targetWeight = targetWeight
+        self.oneRepMax = oneRepMax
+        self.value = value
+        self.weight = weight
+
+        // TODO
+        if let value {
+            targetValueAchieved = switch targetValue {
+            case .maximum:
+                true
+            case .percentageOfMaximum(let percentage):
+                Double(value) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
+            case .exact(let exactTarget):
+                value >= exactTarget
+            case .interval(let minTarget, let maxTarget):
+                value >= minTarget && value <= maxTarget
+            }
+        } else {
+            targetValueAchieved = false
+        }
+
+        if let weight {
+            targetWeightAchieved = switch targetWeight {
+            case .maximum:
+                true
+            case .percentageOfMaximum(let percentage):
+                Double(weight) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
+            case .exact(let exactTarget):
+                weight >= exactTarget
+            case .interval(let minTarget, let maxTarget):
+                weight >= minTarget && weight <= maxTarget
+            case .none:
+                true
+            }
+        } else {
+            targetWeightAchieved = false
+        }
+
+        if targetWeight == nil {
+            targetAchieved = targetValueAchieved
+        } else {
+            targetAchieved = targetValueAchieved && targetWeightAchieved
+        }
+    }
+
     var body: some View {
-        let targetWeightAchieved = weight >= targetWeight
-        let targetValueAchieved = value >= targetValue
-        let targetAchieved = targetValueAchieved && targetWeightAchieved
 
         HStack(spacing: 8) {
             HStack {
-                Text("1")
+                Text(String(set))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text(String(value))
-                    .foregroundStyle(targetValueAchieved ? .green : .black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                if let value {
+                    Text(String(value))
+                        .foregroundStyle(targetValueAchieved ? .green : .black)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    Spacer()
+                }
             }
             .frame(maxWidth: .infinity)
             HStack(spacing: 8) {
-                Text(String(weight))
-                    .foregroundStyle(targetWeightAchieved ? .green : .black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                if let weight {
+                    Text(String(weight))
+                        .foregroundStyle(targetWeightAchieved ? .green : .black)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
 
                 Spacer(minLength: 0)
 

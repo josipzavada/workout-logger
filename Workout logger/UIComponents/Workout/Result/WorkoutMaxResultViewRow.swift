@@ -18,7 +18,6 @@ struct WorkoutMaxView: View {
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Divider()
-                .frame(height: 1)
                 .foregroundStyle(Color(.Colors.paperDark))
 
             Text("Weight")
@@ -32,9 +31,6 @@ struct WorkoutMaxView: View {
         .frame(maxWidth: .infinity)
         .background(.white)
         .clipShape(.rect(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.Colors.paperDark), lineWidth: 1)
-        )
+        .roundedStrokeOverlay()
     }
 }

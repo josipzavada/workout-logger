@@ -35,7 +35,6 @@ struct WorkoutInputView: View {
         }
     }
 
-    @ViewBuilder
     var inputCard: some View {
         VStack(spacing: 12) {
             Text(workoutName)
@@ -48,11 +47,11 @@ struct WorkoutInputView: View {
             let shouldHideWeight = workoutSetLogs.allSatisfy { $0.targetWeight == nil }
             WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
-            ForEach(workoutSetLogs.indices, id: \.self) { index in
+            ForEach(Array(workoutSetLogs.enumerated()), id: \.offset) { (index, workoutSetLog) in
                 WorkoutInputRowWithWeight(
                     set: index + 1,
-                    targetValue: workoutSetLogs[index].targetVolume,
-                    targetWeight: workoutSetLogs[index].targetWeight,
+                    targetValue: workoutSetLog.targetVolume,
+                    targetWeight: workoutSetLog.targetWeight,
                     oneRepMax: $oneRepMax,
                     value: $workoutSetLogs[index].volume,
                     weight: $workoutSetLogs[index].weight
@@ -72,10 +71,7 @@ struct WorkoutInputView: View {
         .frame(maxWidth: .infinity)
         .background(.white)
         .clipShape(.rect(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.Colors.paperDark), lineWidth: 1)
-        )
+        .roundedStrokeOverlay()
     }
 
     @ViewBuilder

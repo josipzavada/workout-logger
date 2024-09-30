@@ -62,7 +62,7 @@ struct WorkoutLog {
 }
 
 struct WorkoutSetLog: Identifiable {
-    let id = UUID().uuidString
+    let id = UUID()
     let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?
     var volume: Int?

@@ -28,7 +28,6 @@ struct WorkoutResultsView: View {
         }
     }
 
-    @ViewBuilder
     var inputCard: some View {
         VStack(spacing: 12) {
             Text("Pull-ups")
@@ -55,10 +54,7 @@ struct WorkoutResultsView: View {
         .frame(maxWidth: .infinity)
         .background(.white)
         .clipShape(.rect(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.Colors.paperDark), lineWidth: 1)
-        )
+        .roundedStrokeOverlay()
     }
 
     @ViewBuilder

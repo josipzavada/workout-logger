@@ -144,9 +144,10 @@ struct WorkoutInputTextField: View {
         .padding(12)
         .background(Color(targetAchieved ? successTextBackground : .white))
         .clipShape(.rect(cornerRadius: 8))
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(targetAchieved ? successTextBorderColor : .Colors.neutralG20), lineWidth: 2)
+        .roundedStrokeOverlay(
+            cornerRadius: 8,
+            strokeColor: Color(targetAchieved ? successTextBorderColor : .Colors.neutralG20),
+            lineWidth: 2
         )
     }
 }

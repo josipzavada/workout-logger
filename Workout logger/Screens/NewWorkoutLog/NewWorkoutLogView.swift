@@ -18,18 +18,23 @@ struct NewWorkoutLogView: View {
                     if let workoutPreviewViewModel = viewModel.workoutPreviewViewModel {
                         WorkoutModeView(viewModel: workoutPreviewViewModel)
                     }
-                    ForEach(viewModel.maxInputs.indices, id: \.self) { index in
-                        if let maxInputViewModel = viewModel.maxInputs[index] {
+                    ForEach(Array(viewModel.maxInputs.enumerated()), id: \.offset) { index, maxInputViewModel in
+                        if let maxInputViewModel = maxInputViewModel {
                             WorkoutMaxInputView(title: maxInputViewModel.title, maxValue: $viewModel.workouts[index].oneRepMax)
                         }
                     }
-                    ForEach(viewModel.workouts.indices, id: \.self) { index in
-                        WorkoutInputView(workoutName: viewModel.workouts[index].name, valueUnit: viewModel.workouts[index].volumeUnit, oneRepMax: $viewModel.workouts[index].oneRepMax, workoutSetLogs: $viewModel.workouts[index].setLogs)
+                    ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { (index, workout) in
+                        WorkoutInputView(
+                            workoutName: workout.name,
+                            valueUnit: workout.volumeUnit,
+                            oneRepMax: $viewModel.workouts[index].oneRepMax,
+                            workoutSetLogs: $viewModel.workouts[index].setLogs
+                        )
                     }
                 }
                 .padding(12)
             }
-            .frame(maxHeight: .infinity)
+            .scrollIndicators(.never)
             Button {
                 viewModel.saveTapped()
             } label: {

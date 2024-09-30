@@ -61,12 +61,13 @@ struct WorkoutResultRowWithWeight: View {
                     .foregroundStyle(targetWeightAchieved ? .green : .black)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
+                Spacer(minLength: 0)
+
                 Image(systemName: "checkmark")
                     .frame(width: 40, height: 40)
                     .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
                     .clipShape(.rect(cornerRadius: 8))
             }
-            .frame(maxWidth: .infinity, alignment: .trailing)
         }
     }
 }

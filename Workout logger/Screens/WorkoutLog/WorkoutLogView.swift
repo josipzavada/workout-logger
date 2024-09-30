@@ -9,16 +9,15 @@ import SwiftUI
 
 struct WorkoutLogView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ScrollView {
-                VStack(spacing: 0) {
+                LazyVStack(spacing: 0) {
 //                    WorkoutModeView()
                     WorkoutMaxView()
                     WorkoutResultsView(valueUnit: VolumeUnit.rep)
                 }
                 .padding(12)
             }
-            .frame(maxHeight: .infinity)
             Button {
                 print("Saved")
             } label: {

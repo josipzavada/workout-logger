@@ -19,7 +19,6 @@ struct WorkoutItem: View {
         .buttonStyle(PlainWorkoutLogButton())
     }
 
-    @ViewBuilder
     var workoutItemButtonLabel: some View {
         HStack {
             workoutAndDescriptionView
@@ -29,14 +28,10 @@ struct WorkoutItem: View {
         .frame(maxWidth: .infinity)
         .background(.white)
         .clipShape(.rect(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.Colors.paperDark), lineWidth: 1)
-        )
+        .roundedStrokeOverlay()
         .padding(.vertical, 4)
     }
 
-    @ViewBuilder
     var workoutAndDescriptionView: some View {
         VStack(spacing: 12) {
             Text(title)

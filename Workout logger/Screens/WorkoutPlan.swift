@@ -13,7 +13,7 @@ struct WorkoutItem: View {
     let action: () -> Void
 
     var body: some View {
-        NavigationLink(destination: WorkoutLogs()) {
+        NavigationLink(value: NavigationState.workoutLogsView) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())
@@ -50,8 +50,11 @@ struct WorkoutItem: View {
 }
 
 struct WorkoutPlan: View {
+
+    @State var navigationPath = [NavigationState]()
+
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             ScrollView {
                 VStack(spacing: 0) {
                     WorkoutItem(title: "EMOM", description: "EMOM 12 rounds") {
@@ -68,6 +71,16 @@ struct WorkoutPlan: View {
                     }
                 }
                 .padding(12)
+                .navigationDestination(for: NavigationState.self) { navigationState in
+                    switch navigationState {
+                    case .workoutLogsView:
+                        WorkoutLogs()
+                    case .singleWorkoutLogView:
+                        WorkoutLogView()
+                    case .newWorkoutLogView:
+                        NewWorkoutLogView()
+                    }
+                }
             }
             .frame(maxHeight: .infinity)
             .background(Color(.Colors.paper))

@@ -13,7 +13,7 @@ struct WorkoutLogItem: View {
     let action: () -> Void
 
     var body: some View {
-        NavigationLink(destination: WorkoutLogView()) {
+        NavigationLink(value: NavigationState.singleWorkoutLogView) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())
@@ -74,7 +74,7 @@ struct WorkoutLogs: View {
                 }
                 .padding(12)
             }.safeAreaInset(edge: .bottom) {
-                NavigationLink(destination: NewWorkoutLogView()) {
+                NavigationLink(value: NavigationState.newWorkoutLogView) {
                     Text("Add new")
                 }
                 .buttonStyle(WorkoutLogButton())

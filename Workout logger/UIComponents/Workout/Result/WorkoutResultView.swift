@@ -15,7 +15,7 @@ struct WorkoutResultsView: View {
     @State private var weight: Int = 12
     @State private var topSet: Int = 1
 
-    var superSetOrder: SuperSetOrder = .none
+    var superSetOrder: WorkoutPathOrder = .none
 
     var body: some View {
         HStack(spacing: 4) {

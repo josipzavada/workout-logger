@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum SuperSetOrder {
+enum WorkoutPathOrder {
     case first
     case last
     case middle
@@ -22,14 +22,16 @@ struct WorkoutInputView: View {
     @Binding var workoutSetLogs: [WorkoutSetLog]
     @State var topSet: Int = 1
 
-    var superSetOrder: SuperSetOrder = .none
+    var workoutPathOrder: WorkoutPathOrder = .none
+    var workoutPathLabel: String = ""
+
 
     var body: some View {
         HStack(spacing: 4) {
             inputCard
                 .padding(.vertical, 4)
 
-            if (superSetOrder != .none) {
+            if (workoutPathOrder != .none) {
                 workoutPath
             }
         }
@@ -77,8 +79,8 @@ struct WorkoutInputView: View {
     @ViewBuilder
     var workoutPath: some View {
 
-        let isFirst = superSetOrder == .first
-        let isLast = superSetOrder == .last
+        let isFirst = workoutPathOrder == .first
+        let isLast = workoutPathOrder == .last
 
         VStack {
             if (!isFirst) {
@@ -93,7 +95,7 @@ struct WorkoutInputView: View {
                     .frame(width: 1, height: 15)
 
             }
-            Text("M1")
+            Text(workoutPathLabel)
                 .font(.system(size: 13))
                 .opacity(0.3)
                 .padding(6)

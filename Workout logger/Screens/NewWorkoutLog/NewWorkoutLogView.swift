@@ -24,11 +24,16 @@ struct NewWorkoutLogView: View {
                         }
                     }
                     ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { (index, workout) in
+
+                        let workoutPathOrder: WorkoutPathOrder = workoutPathOrder(index: index, numberOfWorkouts: viewModel.workouts.count)
+
                         WorkoutInputView(
                             workoutName: workout.name,
                             valueUnit: workout.volumeUnit,
                             oneRepMax: $viewModel.workouts[index].oneRepMax,
-                            workoutSetLogs: $viewModel.workouts[index].setLogs
+                            workoutSetLogs: $viewModel.workouts[index].setLogs,
+                            workoutPathOrder: viewModel.workoutProgressLabel != nil ? workoutPathOrder : .none,
+                            workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
                         )
                     }
                 }
@@ -46,6 +51,16 @@ struct NewWorkoutLogView: View {
         .background(Color(.Colors.paper))
         .navigationTitle("New log")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    func workoutPathOrder(index: Int, numberOfWorkouts: Int) -> WorkoutPathOrder {
+        if index == 0 {
+            return WorkoutPathOrder.first
+        } else if index == numberOfWorkouts - 1 {
+            return WorkoutPathOrder.last
+        } else {
+            return WorkoutPathOrder.middle
+        }
     }
 }
 

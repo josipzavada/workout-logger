@@ -25,10 +25,10 @@ struct WorkoutPreviewViewModel: Identifiable {
 }
 
 class NewWorkoutLogViewModel: ObservableObject {
-    var workoutPreviewViewModel: WorkoutModeViewModel?
+    var workoutModeViewModel: WorkoutModeViewModel?
     @Published var workoutProgressLabel: String?
     @Published var maxInputs = [MaxInputViewModel?]()
-    @Published var workouts: [WorkoutLog] = []
+    @Published var workouts: [Workout] = []
     @Published var oneRepMax = 100
 
     init() {
@@ -96,10 +96,14 @@ class NewWorkoutLogViewModel: ObservableObject {
             }
         }
 
-        displayPyramidWorkout(workoutPlanItem: workoutPlanItem1)
+//        displayPyramidWorkout(workoutPlanItem: workoutPlanItem1)
 //        displayEmomWorkout(workoutPlanItem: workoutPlanItem2)
 //        displaySupersetWorkout(workoutPlanItem: workoutPlanItem3)
-//        displayTestWorkout(workoutPlanItem: workoutPlanItem4)
+        displayTestWorkout(workoutPlanItem: workoutPlanItem4)
+
+        for workoutIndex in workouts.indices {
+            workouts[workoutIndex].oneRepMax = maxInputs[safe: workoutIndex]??.value
+        }
     }
 
     func displayPyramidWorkout(workoutPlanItem: WorkoutPlanItem) {
@@ -119,16 +123,12 @@ class NewWorkoutLogViewModel: ObservableObject {
         let setTargetsString = setTargets.joined(separator: " - ")
         let title = "Pyramid: \(workout.name)"
 
-        let setLogs = workout.sets.map {
-            WorkoutSetLog(targetVolume: $0.targetVolume, targetWeight: $0.targetWeight, volume: nil, weight: nil)
-        }
-        let workoutLog = WorkoutLog(name: workout.name, volumeUnit: workout.volumeUnit, oneRepMax: maxInputs.first??.value, setLogs: setLogs)
-        workouts = [workoutLog]
         let workoutPreviews = workouts.map({ workout in
             return WorkoutPreviewViewModel(target: nil, name: workout.name)
         })
 
-        workoutPreviewViewModel = WorkoutModeViewModel(title: title, target: setTargetsString, workoutPreviews: workoutPreviews)
+        workoutModeViewModel = WorkoutModeViewModel(title: title, target: setTargetsString, workoutPreviews: workoutPreviews)
+        workouts = [workout]
     }
 
     func displayEmomWorkout(workoutPlanItem: WorkoutPlanItem) {
@@ -173,13 +173,8 @@ class NewWorkoutLogViewModel: ObservableObject {
 
             return WorkoutPreviewViewModel(target: workoutValueAndWeight, name: workout.name)
         }
-        workoutPreviewViewModel = WorkoutModeViewModel(title: "EPOM", target: "\(numberOfRounds) rounds", workoutPreviews: workoutPreviews)
-        workouts = workoutPlanItem.workouts.enumerated().map { index, workout in
-            let setLogs = workout.sets.map { workoutSet in
-                WorkoutSetLog(targetVolume: workoutSet.targetVolume, targetWeight: workoutSet.targetWeight, volume: nil, weight: nil)
-            }
-            return WorkoutLog(name: workout.name, volumeUnit: workout.volumeUnit, oneRepMax: maxInputs[safe: index]??.value, setLogs: setLogs)
-        }
+        workoutModeViewModel = WorkoutModeViewModel(title: "EPOM", target: "\(numberOfRounds) rounds", workoutPreviews: workoutPreviews)
+        workouts = workoutPlanItem.workouts
         workoutProgressLabel = "M"
     }
 
@@ -236,13 +231,8 @@ class NewWorkoutLogViewModel: ObservableObject {
         }
 
         let workoutPreviews = workoutPlanItem.workouts.map { WorkoutPreviewViewModel(target: nil, name: $0.name) }
-        workoutPreviewViewModel = WorkoutModeViewModel(title: "Supersets", target: valueAndWeightDescription, workoutPreviews: workoutPreviews)
-        workouts = workoutPlanItem.workouts.enumerated().map { index, workout in
-            let setLogs = workout.sets.map { workoutSet in
-                WorkoutSetLog(targetVolume: workoutSet.targetVolume, targetWeight: workoutSet.targetWeight, volume: nil, weight: nil)
-            }
-            return WorkoutLog(name: workout.name, volumeUnit: workout.volumeUnit, oneRepMax: maxInputs[safe: index]??.value, setLogs: setLogs)
-        }
+        workoutModeViewModel = WorkoutModeViewModel(title: "Supersets", target: valueAndWeightDescription, workoutPreviews: workoutPreviews)
+        workouts = workoutPlanItem.workouts
         workoutProgressLabel = "A"
     }
 
@@ -297,21 +287,17 @@ class NewWorkoutLogViewModel: ObservableObject {
 
         let title = "\(workout.name) Test"
 
-        let setLogs = workout.sets.map {
-            WorkoutSetLog(targetVolume: $0.targetVolume, targetWeight: $0.targetWeight, volume: nil, weight: nil)
-        }
-        let workoutLog = WorkoutLog(name: workout.name, volumeUnit: workout.volumeUnit, oneRepMax: maxInputs.first??.value, setLogs: setLogs)
-        workouts = [workoutLog]
+        workouts = [workout]
         let workoutPreviews = workouts.map({ workout in
             return WorkoutPreviewViewModel(target: nil, name: workout.name)
         })
 
-        workoutPreviewViewModel = WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: workoutPreviews)
+        workoutModeViewModel = WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: workoutPreviews)
     }
 
     func saveTapped() {
         workouts.forEach { workout in
-            workout.setLogs.forEach { workoutSet in
+            workout.sets.forEach { workoutSet in
                 print(workoutSet.volume)
             }
         }

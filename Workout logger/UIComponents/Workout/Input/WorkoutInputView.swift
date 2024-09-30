@@ -19,7 +19,7 @@ struct WorkoutInputView: View {
     let workoutName: String
     let valueUnit: VolumeUnit
     @Binding var oneRepMax: Int?
-    @Binding var workoutSetLogs: [WorkoutSetLog]
+    @Binding var workoutSets: [WorkoutSet]
     @State var topSet: Int = 1
 
     var workoutPathOrder: WorkoutPathOrder = .none
@@ -46,17 +46,17 @@ struct WorkoutInputView: View {
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            let shouldHideWeight = workoutSetLogs.allSatisfy { $0.targetWeight == nil }
+            let shouldHideWeight = workoutSets.allSatisfy { $0.targetWeight == nil }
             WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
-            ForEach(Array(workoutSetLogs.enumerated()), id: \.offset) { (index, workoutSetLog) in
+            ForEach(Array(workoutSets.enumerated()), id: \.offset) { (index, workoutSet) in
                 WorkoutInputRowWithWeight(
                     set: index + 1,
-                    targetValue: workoutSetLog.targetVolume,
-                    targetWeight: workoutSetLog.targetWeight,
+                    targetValue: workoutSet.targetVolume,
+                    targetWeight: workoutSet.targetWeight,
                     oneRepMax: $oneRepMax,
-                    value: $workoutSetLogs[index].volume,
-                    weight: $workoutSetLogs[index].weight
+                    value: $workoutSets[index].volume,
+                    weight: $workoutSets[index].weight
                 )
             }
 

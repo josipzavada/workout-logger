@@ -46,22 +46,11 @@ struct WorkoutPlanItem {
 struct Workout {
     let name: String
     let volumeUnit: VolumeUnit
-    let sets: [WorkoutSet]
-}
-
-struct WorkoutSet {
-    let targetVolume: WorkoutTarget
-    let targetWeight: WorkoutTarget?
-}
-
-struct WorkoutLog {
-    let name: String
-    let volumeUnit: VolumeUnit
     var oneRepMax: Int?
-    var setLogs: [WorkoutSetLog]
+    var sets: [WorkoutSet]
 }
 
-struct WorkoutSetLog: Identifiable {
+struct WorkoutSet: Identifiable {
     let id = UUID()
     let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?

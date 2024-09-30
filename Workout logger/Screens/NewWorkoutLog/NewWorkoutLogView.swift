@@ -15,7 +15,7 @@ struct NewWorkoutLogView: View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if let workoutPreviewViewModel = viewModel.workoutPreviewViewModel {
+                    if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
                         WorkoutModeView(viewModel: workoutPreviewViewModel)
                     }
                     ForEach(Array(viewModel.maxInputs.enumerated()), id: \.offset) { index, maxInputViewModel in
@@ -31,7 +31,7 @@ struct NewWorkoutLogView: View {
                             workoutName: workout.name,
                             valueUnit: workout.volumeUnit,
                             oneRepMax: $viewModel.workouts[index].oneRepMax,
-                            workoutSetLogs: $viewModel.workouts[index].setLogs,
+                            workoutSets: $viewModel.workouts[index].sets,
                             workoutPathOrder: viewModel.workoutProgressLabel != nil ? workoutPathOrder : .none,
                             workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
                         )

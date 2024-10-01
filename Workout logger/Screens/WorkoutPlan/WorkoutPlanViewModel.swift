@@ -8,7 +8,7 @@
 import Foundation
 
 struct WorkoutPlanItemViewModel: Identifiable {
-    var id = UUID()
+    var id: Int
     let title: String
     let description: String
 }
@@ -41,7 +41,7 @@ class WorkoutPlanViewModel: ObservableObject {
                 case .test:
                     firstWorkout != nil ? WorkoutModeFormatter.formatTestTarget(workout: firstWorkout!) : ""
                 }
-                return WorkoutPlanItemViewModel(title: workoutPlanItem.type.rawValue.capitalized, description: description)
+                return WorkoutPlanItemViewModel(id: workoutPlanItem.id, title: workoutPlanItem.type.rawValue.capitalized, description: description)
             })
             isLoading = false
         } catch {

@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct WorkoutItem: View {
+    let id: Int
     let title: String
     let description: String
 
     var body: some View {
-        NavigationLink(value: NavigationState.workoutLogsView) {
+        NavigationLink(value: NavigationState.workoutLogsView(planId: id)) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())
@@ -92,14 +93,14 @@ struct WorkoutPlan: View {
         ScrollView {
             VStack(spacing: 0) {
                 ForEach(viewModel.workoutPlanItemsViewModels) { planItemViewModel in
-                    WorkoutItem(title: planItemViewModel.title, description: planItemViewModel.description)
+                    WorkoutItem(id: planItemViewModel.id, title: planItemViewModel.title, description: planItemViewModel.description)
                 }
             }
             .padding(12)
             .navigationDestination(for: NavigationState.self) { navigationState in
                 switch navigationState {
-                case .workoutLogsView:
-                    WorkoutLogs()
+                case .workoutLogsView(let planId):
+                    WorkoutLogs(planId: planId)
                 case .singleWorkoutLogView:
                     WorkoutLogView()
                 case .newWorkoutLogView:

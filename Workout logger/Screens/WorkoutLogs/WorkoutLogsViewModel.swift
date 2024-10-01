@@ -19,8 +19,8 @@ class WorkoutLogsViewModel: ObservableObject {
     @Published var errorString: String?
     @Published var workoutLogItemViewModels = [WorkoutLogItemViewModel]()
 
-    func fetchWorkoutLogs() async {
-        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/2/workout-logs") else { return }
+    func fetchWorkoutLogs(planId: Int) async {
+        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/\(planId)/workout-logs") else { return }
         isLoading = true
         errorString = nil
         workoutLogItemViewModels = []

@@ -12,7 +12,7 @@ class WorkoutLogViewModel {
     var workouts: [Workout] = []
 
     init() {
-        let workoutPlanItem1 = WorkoutPlanItem(type: .pyramid, workouts: [
+        let workoutPlanItem1 = WorkoutPlanItem(id: 1, type: .pyramid, workouts: [
             Workout(name: "Barbell deadlift", volumeUnit: .reps, sets: [
                 WorkoutSet(id: 1, targetVolume: .exact(8), targetWeight: .exact(60), volume: 8, weight: 70),
                 WorkoutSet(id: 2, targetVolume: .exact(6), targetWeight: .exact(60), volume: 6, weight: 50),
@@ -23,7 +23,7 @@ class WorkoutLogViewModel {
             ])
         ])
 
-        let workoutPlanItem2 = WorkoutPlanItem(type: .emom, workouts: [
+        let workoutPlanItem2 = WorkoutPlanItem(id: 2, type: .emom, workouts: [
             Workout(name: "Pull ups", volumeUnit: .reps, sets: [
                 WorkoutSet(id: 1, targetVolume: .exact(12), targetWeight: nil, volume: 12),
                 WorkoutSet(id: 2, targetVolume: .exact(12), targetWeight: nil, volume: 11),
@@ -41,7 +41,7 @@ class WorkoutLogViewModel {
             ]),
         ])
 
-        let workoutPlanItem3 = WorkoutPlanItem(type: .superset, workouts: [
+        let workoutPlanItem3 = WorkoutPlanItem(id: 3, type: .superset, workouts: [
             Workout(name: "A-Frame HSPU", volumeUnit: .reps, sets: [
                 WorkoutSet(id: 1, targetVolume: .interval(8, 12), targetWeight: nil, volume: 9),
                 WorkoutSet(id: 2, targetVolume: .interval(8, 12), targetWeight: nil, volume: 7),
@@ -54,7 +54,7 @@ class WorkoutLogViewModel {
             ])
         ])
 
-        let workoutPlanItem4 = WorkoutPlanItem(type: .pyramid, workouts: [
+        let workoutPlanItem4 = WorkoutPlanItem(id: 4, type: .pyramid, workouts: [
             Workout(name: "Bench press", volumeUnit: .reps, oneRepMax: 100, sets: [
                 WorkoutSet(id: 1, targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 5, weight: 70),
                 WorkoutSet(id: 2, targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 4, weight: 50),

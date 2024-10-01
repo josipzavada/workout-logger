@@ -44,7 +44,12 @@ struct WorkoutLogItem: View {
 
 struct WorkoutLogs: View {
 
+    private let planId: Int
     @StateObject private var viewModel = WorkoutLogsViewModel()
+
+    init(planId: Int) {
+        self.planId = planId
+    }
 
     var body: some View {
 
@@ -60,7 +65,7 @@ struct WorkoutLogs: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if !viewModel.workoutLogItemViewModels.isEmpty && viewModel.errorString == "" {
+            if viewModel.errorString == "" {
                 NavigationLink(value: NavigationState.newWorkoutLogView) {
                     Text("Add new")
                 }
@@ -68,7 +73,7 @@ struct WorkoutLogs: View {
             }
         }
         .task {
-            await viewModel.fetchWorkoutLogs()
+            await viewModel.fetchWorkoutLogs(planId: planId)
         }
         .background(Color(.Colors.paper))
         .navigationTitle("Logs")
@@ -79,7 +84,7 @@ struct WorkoutLogs: View {
     }
 
     var emptyStateView: some View {
-        Text("You currently have no workout plans. Ask your trainer to add some.")
+        Text("You currently have no workout logs. Tap on Add new to add some.")
     }
 
     func errorView(errorString: String) -> some View {
@@ -99,5 +104,5 @@ struct WorkoutLogs: View {
 }
 
 #Preview {
-    WorkoutLogs()
+    WorkoutLogs(planId: 2)
 }

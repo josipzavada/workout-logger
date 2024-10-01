@@ -10,7 +10,6 @@ import SwiftUI
 struct WorkoutItem: View {
     let title: String
     let description: String
-    let action: () -> Void
 
     var body: some View {
         NavigationLink(value: NavigationState.workoutLogsView) {
@@ -56,45 +55,58 @@ struct WorkoutPlan: View {
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
-            ScrollView {
-                VStack(spacing: 0) {
-                    WorkoutItem(title: "EMOM", description: "EMOM 12 rounds") {
-                        print("asdf")
-                    }
-                    WorkoutItem(title: "EMOM", description: "EMOM 12 rounds") {
-                        print("asdf")
-                    }
-                    WorkoutItem(title: "EMOM", description: "EMOM 12 rounds") {
-                        print("asdf")
-                    }
-                    WorkoutItem(title: "EMOM", description: "EMOM 12 rounds") {
-                        print("asdf")
-                    }
-                }
-                .padding(12)
-                .navigationDestination(for: NavigationState.self) { navigationState in
-                    switch navigationState {
-                    case .workoutLogsView:
-                        WorkoutLogs()
-                    case .singleWorkoutLogView:
-                        WorkoutLogView()
-                    case .newWorkoutLogView:
-                        NewWorkoutLogView()
-                    }
+            Group {
+                if viewModel.isLoading {
+                    progressView
+                } else if let errorString = viewModel.errorString {
+                    emptyStateView
+                } else if viewModel.workoutPlanItemsViewModels.isEmpty {
+                    errorView
+                } else {
+                    planItems
                 }
             }
-            .frame(maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.Colors.paper))
             .navigationTitle("My workout plan")
-            .task {
-                do {
-                    try await viewModel.fetchPlanItems()
-                } catch {
-                    print(error)
+        }
+        .task {
+            await viewModel.fetchPlanItems()
+        }
+        .tint(.black)
+    }
+
+    var progressView: some View {
+        ProgressView()
+    }
+
+    var emptyStateView: some View {
+        Text("You currently have no workout plans. Ask your trainer to add some.")
+    }
+
+    var errorView: some View {
+        Text("An error occured. Please try again later.")
+    }
+
+    var planItems: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ForEach(viewModel.workoutPlanItemsViewModels) { planItemViewModel in
+                    WorkoutItem(title: planItemViewModel.title, description: planItemViewModel.description)
+                }
+            }
+            .padding(12)
+            .navigationDestination(for: NavigationState.self) { navigationState in
+                switch navigationState {
+                case .workoutLogsView:
+                    WorkoutLogs()
+                case .singleWorkoutLogView:
+                    WorkoutLogView()
+                case .newWorkoutLogView:
+                    NewWorkoutLogView()
                 }
             }
         }
-        .tint(.black)
     }
 }
 

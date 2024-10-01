@@ -51,6 +51,7 @@ struct WorkoutItem: View {
 
 struct WorkoutPlan: View {
 
+    @StateObject private var viewModel = WorkoutPlanViewModel()
     @State var navigationPath = [NavigationState]()
 
     var body: some View {
@@ -85,6 +86,13 @@ struct WorkoutPlan: View {
             .frame(maxHeight: .infinity)
             .background(Color(.Colors.paper))
             .navigationTitle("My workout plan")
+            .task {
+                do {
+                    try await viewModel.fetchPlanItems()
+                } catch {
+                    print(error)
+                }
+            }
         }
         .tint(.black)
     }

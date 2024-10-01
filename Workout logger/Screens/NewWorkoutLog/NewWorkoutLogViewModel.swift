@@ -61,7 +61,7 @@ class NewWorkoutLogViewModel: ObservableObject {
             ]),
         ])
 
-        let workoutPlanItem3 = WorkoutPlanItem(type: .superSet, workouts: [
+        let workoutPlanItem3 = WorkoutPlanItem(type: .superset, workouts: [
             Workout(name: "A-Frame HSPU", volumeUnit: .reps, sets: [
                 WorkoutSet(id: 1, targetVolume: .interval(8, 12), targetWeight: nil),
                 WorkoutSet(id: 2, targetVolume: .interval(8, 12), targetWeight: nil),

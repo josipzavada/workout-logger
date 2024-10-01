@@ -7,16 +7,7 @@
 
 enum WorkoutModeFormatter {
     static func formatPyramidWorkoutMode(workout: Workout) -> WorkoutModeViewModel {
-        let setTargets = workout.sets.compactMap({ workoutSet in
-            switch workoutSet.targetVolume {
-            case .exact(let value):
-                return String(value)
-            default:
-                return nil
-            }
-        })
-
-        let setTargetsString = setTargets.joined(separator: " - ")
+        let setTargetsString = formatPyramidTarget(workout: workout)
         let title = "Pyramid: \(workout.name)"
 
         let workoutPreviews = WorkoutPreviewViewModel(target: nil, name: workout.name)
@@ -24,7 +15,7 @@ enum WorkoutModeFormatter {
     }
 
     static func formatEmomWorkoutMode(workouts: [Workout]) -> WorkoutModeViewModel {
-        let numberOfRounds = workouts.map { $0.sets.count }.reduce(0, +)
+        let numberOfRoundsString = formatEmomTarget(workouts: workouts)
         let workoutPreviews = workouts.map { workout in
             let targetValue = workout.sets.first?.targetVolume
             let targetWeight = workout.sets.first?.targetWeight
@@ -65,10 +56,41 @@ enum WorkoutModeFormatter {
 
             return WorkoutPreviewViewModel(target: workoutValueAndWeight, name: workout.name)
         }
-        return WorkoutModeViewModel(title: "EPOM", target: "\(numberOfRounds) rounds", workoutPreviews: workoutPreviews)
+        return WorkoutModeViewModel(title: "EMOM", target: numberOfRoundsString, workoutPreviews: workoutPreviews)
     }
 
     static func formatSupersetWorkoutMode(workouts: [Workout]) -> WorkoutModeViewModel {
+        let target = formatSupersetTarget(workouts: workouts)
+        let workoutPreviews = workouts.map { WorkoutPreviewViewModel(target: nil, name: $0.name) }
+        return WorkoutModeViewModel(title: "Supersets", target: target, workoutPreviews: workoutPreviews)
+    }
+
+    static func formatTestWorkoutMode(workout: Workout) -> WorkoutModeViewModel {
+        let workoutValueAndWeight = formatTestTarget(workout: workout)
+        let title = "\(workout.name) Test"
+        let workoutPreviews = WorkoutPreviewViewModel(target: nil, name: workout.name)
+        return WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: [workoutPreviews])
+    }
+
+    static func formatPyramidTarget(workout: Workout) -> String {
+        let setTargets = workout.sets.compactMap({ workoutSet in
+            switch workoutSet.targetVolume {
+            case .exact(let value):
+                return String(value)
+            default:
+                return nil
+            }
+        })
+
+        return setTargets.joined(separator: " - ")
+    }
+
+    static func formatEmomTarget(workouts: [Workout]) -> String {
+        let numberOfRounds = workouts.map { $0.sets.count }.reduce(0, +)
+        return "\(numberOfRounds) rounds"
+    }
+
+    static func formatSupersetTarget(workouts: [Workout]) -> String {
         let workoutsSetsCount = workouts.map { $0.sets.count }
         let areAllSetsEqual = workoutsSetsCount.allSatisfy { $0 == workoutsSetsCount.first }
 
@@ -119,12 +141,10 @@ enum WorkoutModeFormatter {
                 break
             }
         }
-
-        let workoutPreviews = workouts.map { WorkoutPreviewViewModel(target: nil, name: $0.name) }
-        return WorkoutModeViewModel(title: "Supersets", target: valueAndWeightDescription, workoutPreviews: workoutPreviews)
+        return valueAndWeightDescription
     }
 
-    static func formatTestWorkoutMode(workout: Workout) -> WorkoutModeViewModel {
+    static func formatTestTarget(workout: Workout) -> String {
         let targetValue = workout.sets.first?.targetVolume
         let targetWeight = workout.sets.first?.targetWeight
         let targetValueUnit = workout.volumeUnit
@@ -167,12 +187,7 @@ enum WorkoutModeFormatter {
         }
 
         workoutValueAndWeight = "\(workout.sets.count) x \(workoutValueAndWeight)"
-
-        let title = "\(workout.name) Test"
-
-        let workoutPreviews = WorkoutPreviewViewModel(target: nil, name: workout.name)
-
-        return WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: [workoutPreviews])
+        return workoutValueAndWeight
     }
 
     static func workoutPathOrder(index: Int, numberOfWorkouts: Int) -> WorkoutPathOrder {

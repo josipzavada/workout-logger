@@ -27,10 +27,21 @@ class WorkoutPlanViewModel: ObservableObject {
         workoutPlanItemsViewModels = []
         let request = URLRequest(url: url)
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, _) = try await URLSession.shared.data(for: request)
             let workoutPlans = try JSONDecoder().decode([WorkoutPlanItem].self, from: data)
             workoutPlanItemsViewModels = workoutPlans.map({ workoutPlanItem in
-                return WorkoutPlanItemViewModel(title: workoutPlanItem.type.rawValue, description: "description")
+                let firstWorkout = workoutPlanItem.workouts.first
+                let description = switch workoutPlanItem.type {
+                case .emom:
+                    WorkoutModeFormatter.formatEmomTarget(workouts: workoutPlanItem.workouts)
+                case .pyramid:
+                    firstWorkout != nil ? WorkoutModeFormatter.formatPyramidTarget(workout: firstWorkout!) : ""
+                case .superset:
+                    WorkoutModeFormatter.formatSupersetTarget(workouts: workoutPlanItem.workouts)
+                case .test:
+                    firstWorkout != nil ? WorkoutModeFormatter.formatTestTarget(workout: firstWorkout!) : ""
+                }
+                return WorkoutPlanItemViewModel(title: workoutPlanItem.type.rawValue.capitalized, description: description)
             })
             isLoading = false
         } catch {

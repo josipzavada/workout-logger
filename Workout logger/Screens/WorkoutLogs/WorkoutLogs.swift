@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct WorkoutLogItem: View {
-    let title: String
-    let description: String
-    let action: () -> Void
+    let viewModel: WorkoutLogItemViewModel
 
     var body: some View {
         NavigationLink(value: NavigationState.singleWorkoutLogView) {
@@ -34,10 +32,10 @@ struct WorkoutLogItem: View {
 
     var workoutAndDescriptionView: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
+            Text(viewModel.title)
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
-            Text(description)
+            Text(viewModel.description)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(Color(.Colors.Text._60))
         }
@@ -46,41 +44,57 @@ struct WorkoutLogItem: View {
 
 struct WorkoutLogs: View {
 
-    private let dateFormatter: DateFormatter
-    private let timeformatter: DateFormatter
-
-    init() {
-        dateFormatter = DateFormatter()
-        timeformatter = DateFormatter()
-        dateFormatter.dateFormat = "d.M.yyyy"
-        timeformatter.dateFormat = "h:mm a"
-    }
+    @StateObject private var viewModel = WorkoutLogsViewModel()
 
     var body: some View {
-            ScrollView {
-                VStack(spacing: 0) {
-                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                        print("asdf")
-                    }
-                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                        print("asdf")
-                    }
-                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                        print("asdf")
-                    }
-                    WorkoutLogItem(title: dateFormatter.string(from: Date()), description: timeformatter.string(from: Date())) {
-                        print("asdf")
-                    }
-                }
-                .padding(12)
-            }.safeAreaInset(edge: .bottom) {
+
+        Group {
+            if viewModel.isLoading {
+                progressView
+            } else if let errorString = viewModel.errorString {
+                errorView(errorString: errorString)
+            } else if viewModel.workoutLogItemViewModels.isEmpty {
+                emptyStateView
+            } else {
+                logItems
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if !viewModel.workoutLogItemViewModels.isEmpty && viewModel.errorString == "" {
                 NavigationLink(value: NavigationState.newWorkoutLogView) {
                     Text("Add new")
                 }
                 .buttonStyle(WorkoutLogButton())
             }
+        }
+        .task {
+            await viewModel.fetchWorkoutLogs()
+        }
         .background(Color(.Colors.paper))
         .navigationTitle("Logs")
+    }
+
+    var progressView: some View {
+        ProgressView()
+    }
+
+    var emptyStateView: some View {
+        Text("You currently have no workout plans. Ask your trainer to add some.")
+    }
+
+    func errorView(errorString: String) -> some View {
+        return Text(errorString)
+    }
+
+    var logItems: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ForEach(viewModel.workoutLogItemViewModels) {
+                    WorkoutLogItem(viewModel: $0)
+                }
+            }
+            .padding(12)
+        }
     }
 }
 

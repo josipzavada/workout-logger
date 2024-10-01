@@ -40,10 +40,12 @@ enum VolumeUnit: String, Codable {
 
 struct WorkoutPlanItem: Codable {
     let type: WorkoutType
+    let logDate: Date?
     let workouts: [Workout]
 
-    init(type: WorkoutType, workouts: [Workout]) {
+    init(type: WorkoutType, logDate: Date? = nil, workouts: [Workout]) {
         self.type = type
+        self.logDate = logDate
         self.workouts = workouts
     }
 }

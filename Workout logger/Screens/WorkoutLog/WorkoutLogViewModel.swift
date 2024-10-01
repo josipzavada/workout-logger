@@ -13,52 +13,52 @@ class WorkoutLogViewModel {
 
     init() {
         let workoutPlanItem1 = WorkoutPlanItem(type: .pyramid, workouts: [
-            Workout(name: "Barbell deadlift", volumeUnit: .rep, sets: [
-                WorkoutSet(targetVolume: .exact(8), targetWeight: .exact(60), volume: 8, weight: 70),
-                WorkoutSet(targetVolume: .exact(6), targetWeight: .exact(60), volume: 6, weight: 50),
-                WorkoutSet(targetVolume: .exact(4), targetWeight: .exact(60), volume: 3, weight: 70),
-                WorkoutSet(targetVolume: .exact(2), targetWeight: .exact(60), volume: 2, weight: 70),
-                WorkoutSet(targetVolume: .exact(2), targetWeight: .exact(60), volume: 2, weight: 70),
-                WorkoutSet(targetVolume: .exact(10), targetWeight: .exact(60), volume: 8, weight: 50)
+            Workout(name: "Barbell deadlift", volumeUnit: .reps, sets: [
+                WorkoutSet(id: 1, targetVolume: .exact(8), targetWeight: .exact(60), volume: 8, weight: 70),
+                WorkoutSet(id: 2, targetVolume: .exact(6), targetWeight: .exact(60), volume: 6, weight: 50),
+                WorkoutSet(id: 3, targetVolume: .exact(4), targetWeight: .exact(60), volume: 3, weight: 70),
+                WorkoutSet(id: 4, targetVolume: .exact(2), targetWeight: .exact(60), volume: 2, weight: 70),
+                WorkoutSet(id: 5, targetVolume: .exact(2), targetWeight: .exact(60), volume: 2, weight: 70),
+                WorkoutSet(id: 6, targetVolume: .exact(10), targetWeight: .exact(60), volume: 8, weight: 50)
             ])
         ])
 
         let workoutPlanItem2 = WorkoutPlanItem(type: .emom, workouts: [
-            Workout(name: "Pull ups", volumeUnit: .rep, sets: [
-                WorkoutSet(targetVolume: .exact(12), targetWeight: nil, volume: 12),
-                WorkoutSet(targetVolume: .exact(12), targetWeight: nil, volume: 11),
-                WorkoutSet(targetVolume: .exact(12), targetWeight: nil, volume: 13),
+            Workout(name: "Pull ups", volumeUnit: .reps, sets: [
+                WorkoutSet(id: 1, targetVolume: .exact(12), targetWeight: nil, volume: 12),
+                WorkoutSet(id: 2, targetVolume: .exact(12), targetWeight: nil, volume: 11),
+                WorkoutSet(id: 3, targetVolume: .exact(12), targetWeight: nil, volume: 13),
             ]),
             Workout(name: "Assault bike", volumeUnit: .calorie, sets: [
-                WorkoutSet(targetVolume: .maximum, targetWeight: nil, volume: 8),
-                WorkoutSet(targetVolume: .maximum, targetWeight: nil, volume: 8),
-                WorkoutSet(targetVolume: .maximum, targetWeight: nil, volume: 8),
+                WorkoutSet(id: 1, targetVolume: .maximum, targetWeight: nil, volume: 8),
+                WorkoutSet(id: 2, targetVolume: .maximum, targetWeight: nil, volume: 8),
+                WorkoutSet(id: 3, targetVolume: .maximum, targetWeight: nil, volume: 8),
             ]),
             Workout(name: "Run", volumeUnit: .distance, sets: [
-                WorkoutSet(targetVolume: .maximum, targetWeight: nil, volume: 30),
-                WorkoutSet(targetVolume: .maximum, targetWeight: nil, volume: 25),
-                WorkoutSet(targetVolume: .maximum, targetWeight: nil, volume: 20),
+                WorkoutSet(id: 4, targetVolume: .maximum, targetWeight: nil, volume: 30),
+                WorkoutSet(id: 5, targetVolume: .maximum, targetWeight: nil, volume: 25),
+                WorkoutSet(id: 6, targetVolume: .maximum, targetWeight: nil, volume: 20),
             ]),
         ])
 
         let workoutPlanItem3 = WorkoutPlanItem(type: .superSet, workouts: [
-            Workout(name: "A-Frame HSPU", volumeUnit: .rep, sets: [
-                WorkoutSet(targetVolume: .interval(8, 12), targetWeight: nil, volume: 9),
-                WorkoutSet(targetVolume: .interval(8, 12), targetWeight: nil, volume: 7),
-                WorkoutSet(targetVolume: .interval(8, 12), targetWeight: nil, volume: 12),
+            Workout(name: "A-Frame HSPU", volumeUnit: .reps, sets: [
+                WorkoutSet(id: 1, targetVolume: .interval(8, 12), targetWeight: nil, volume: 9),
+                WorkoutSet(id: 2, targetVolume: .interval(8, 12), targetWeight: nil, volume: 7),
+                WorkoutSet(id: 3, targetVolume: .interval(8, 12), targetWeight: nil, volume: 12),
             ]),
-            Workout(name: "Single Arm Cable Row", volumeUnit: .rep, sets: [
-                WorkoutSet(targetVolume: .interval(8, 12), targetWeight: .exact(100), volume: 12),
-                WorkoutSet(targetVolume: .interval(8, 12), targetWeight: .exact(100), volume: 11),
-                WorkoutSet(targetVolume: .interval(8, 12), targetWeight: .exact(100), volume: 7),
+            Workout(name: "Single Arm Cable Row", volumeUnit: .reps, sets: [
+                WorkoutSet(id: 4, targetVolume: .interval(8, 12), targetWeight: .exact(100), volume: 12),
+                WorkoutSet(id: 5, targetVolume: .interval(8, 12), targetWeight: .exact(100), volume: 11),
+                WorkoutSet(id: 6, targetVolume: .interval(8, 12), targetWeight: .exact(100), volume: 7),
             ])
         ])
 
         let workoutPlanItem4 = WorkoutPlanItem(type: .pyramid, workouts: [
-            Workout(name: "Bench press", volumeUnit: .rep, oneRepMax: 100, sets: [
-                WorkoutSet(targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 5, weight: 70),
-                WorkoutSet(targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 4, weight: 50),
-                WorkoutSet(targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 5, weight: 50),
+            Workout(name: "Bench press", volumeUnit: .reps, oneRepMax: 100, sets: [
+                WorkoutSet(id: 1, targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 5, weight: 70),
+                WorkoutSet(id: 2, targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 4, weight: 50),
+                WorkoutSet(id: 3, targetVolume: .exact(5), targetWeight: .percentageOfMaximum(60), volume: 5, weight: 50),
             ])
         ])
 

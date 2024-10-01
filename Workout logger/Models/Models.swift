@@ -22,13 +22,13 @@ enum WorkoutType {
 }
 
 enum VolumeUnit {
-    case rep
+    case reps
     case calorie
     case distance
 
     var name: String {
         switch self {
-        case .rep:
+        case .reps:
             return "reps"
         case .calorie:
             return "calories"
@@ -51,15 +51,9 @@ struct Workout {
 }
 
 struct WorkoutSet: Identifiable {
-    let id = UUID()
+    let id: Int
     let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?
     var volume: Int?
     var weight: Int?
-
-    enum CodingKeys: String, CodingKey {
-        case volumeUnit
-        case targetVolume
-        case targetWeight
-    }
 }

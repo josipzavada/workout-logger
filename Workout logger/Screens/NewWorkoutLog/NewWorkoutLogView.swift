@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NewWorkoutLogView: View {
 
-    @StateObject private var viewModel = NewWorkoutLogViewModel()
+    @ObservedObject var viewModel: NewWorkoutLogViewModel
 
     var body: some View {
         VStack {
@@ -54,6 +54,6 @@ struct NewWorkoutLogView: View {
     }
 }
 
-#Preview {
-    NewWorkoutLogView()
-}
+//#Preview {
+//    NewWorkoutLogView()
+//}

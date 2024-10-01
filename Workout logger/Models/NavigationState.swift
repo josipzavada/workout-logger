@@ -6,7 +6,7 @@
 //
 
 enum NavigationState: Hashable {
-    case workoutLogsView(planId: Int)
+    case workoutLogsView(workoutPlanItem: WorkoutPlanItem)
     case singleWorkoutLogView(workoutPlanItem: WorkoutPlanItem)
-    case newWorkoutLogView
+    case newWorkoutLogView(workoutPlanItem: WorkoutPlanItem)
 }

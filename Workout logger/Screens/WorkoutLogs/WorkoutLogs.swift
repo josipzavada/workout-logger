@@ -44,11 +44,11 @@ struct WorkoutLogItem: View {
 
 struct WorkoutLogs: View {
 
-    private let planId: Int
+    private let workoutPlanItem: WorkoutPlanItem
     @StateObject private var viewModel = WorkoutLogsViewModel()
 
-    init(planId: Int) {
-        self.planId = planId
+    init(workoutPlanItem: WorkoutPlanItem) {
+        self.workoutPlanItem = workoutPlanItem
     }
 
     var body: some View {
@@ -65,15 +65,15 @@ struct WorkoutLogs: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if viewModel.errorString == "" {
-                NavigationLink(value: NavigationState.newWorkoutLogView) {
+            if viewModel.errorString == nil && !viewModel.isLoading {
+                NavigationLink(value: NavigationState.newWorkoutLogView(workoutPlanItem: workoutPlanItem)) {
                     Text("Add new")
                 }
                 .buttonStyle(WorkoutLogButton())
             }
         }
         .task {
-            await viewModel.fetchWorkoutLogs(planId: planId)
+            await viewModel.fetchWorkoutLogs(planId: workoutPlanItem.id)
         }
         .background(Color(.Colors.paper))
         .navigationTitle("Logs")
@@ -103,6 +103,6 @@ struct WorkoutLogs: View {
     }
 }
 
-#Preview {
-    WorkoutLogs(planId: 2)
-}
+//#Preview {
+//    WorkoutLogs(planId: 2)
+//}

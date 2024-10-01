@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct WorkoutItem: View {
-    let id: Int
-    let title: String
-    let description: String
+    let viewModel: WorkoutPlanItemViewModel
 
     var body: some View {
-        NavigationLink(value: NavigationState.workoutLogsView(planId: id)) {
+        NavigationLink(value: NavigationState.workoutLogsView(workoutPlanItem: viewModel.workoutPlanItem)) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())
@@ -34,13 +32,13 @@ struct WorkoutItem: View {
 
     var workoutAndDescriptionView: some View {
         VStack(spacing: 12) {
-            Text(title)
+            Text(viewModel.title)
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack {
                 Image(systemName: "repeat")
-                Text(description)
+                Text(viewModel.description)
                     .font(.system(size: 15, weight: .semibold))
             }
             .foregroundStyle(Color(.Colors.Text._60))
@@ -93,24 +91,25 @@ struct WorkoutPlan: View {
         ScrollView {
             VStack(spacing: 0) {
                 ForEach(viewModel.workoutPlanItemsViewModels) { planItemViewModel in
-                    WorkoutItem(id: planItemViewModel.id, title: planItemViewModel.title, description: planItemViewModel.description)
+                    WorkoutItem(viewModel: planItemViewModel)
                 }
             }
             .padding(12)
             .navigationDestination(for: NavigationState.self) { navigationState in
                 switch navigationState {
-                case .workoutLogsView(let planId):
-                    WorkoutLogs(planId: planId)
+                case .workoutLogsView(let workoutPlanItem):
+                    WorkoutLogs(workoutPlanItem: workoutPlanItem)
                 case .singleWorkoutLogView(let workoutPlanItem):
                     WorkoutLogView(workoutPlanItem: workoutPlanItem)
-                case .newWorkoutLogView:
-                    NewWorkoutLogView()
+                case .newWorkoutLogView(let workoutPlanItem):
+                    let viewModel = NewWorkoutLogViewModel(workoutPlanItem: workoutPlanItem)
+                    NewWorkoutLogView(viewModel: viewModel)
                 }
             }
         }
     }
 }
 
-#Preview {
-    WorkoutPlan()
-}
+//#Preview {
+//    WorkoutPlan()
+//}

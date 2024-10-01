@@ -7,21 +7,21 @@
 
 import Foundation
 
-enum WorkoutTarget: Equatable {
+enum WorkoutTarget: Hashable {
     case maximum
     case percentageOfMaximum(Int)
     case exact(Int)
     case interval(Int, Int)
 }
 
-enum WorkoutType: String, Codable {
+enum WorkoutType: String, Codable, Hashable {
     case pyramid
     case emom
     case superset
     case test
 }
 
-enum VolumeUnit: String, Codable {
+enum VolumeUnit: String, Codable, Hashable {
     case reps
     case calorie
     case distance
@@ -38,7 +38,7 @@ enum VolumeUnit: String, Codable {
     }
 }
 
-struct WorkoutPlanItem: Codable {
+struct WorkoutPlanItem: Codable, Hashable {
     let id: Int
     let type: WorkoutType
     let logDate: Date?
@@ -52,7 +52,7 @@ struct WorkoutPlanItem: Codable {
     }
 }
 
-struct Workout: Codable {
+struct Workout: Codable, Hashable {
     let name: String
     let volumeUnit: VolumeUnit
     var oneRepMax: Int?
@@ -66,7 +66,7 @@ struct Workout: Codable {
     }
 }
 
-struct WorkoutSet: Identifiable, Codable {
+struct WorkoutSet: Identifiable, Codable, Hashable {
     let id: Int
     let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?

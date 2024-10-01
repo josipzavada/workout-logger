@@ -101,8 +101,8 @@ struct WorkoutPlan: View {
                 switch navigationState {
                 case .workoutLogsView(let planId):
                     WorkoutLogs(planId: planId)
-                case .singleWorkoutLogView:
-                    WorkoutLogView()
+                case .singleWorkoutLogView(let workoutPlanItem):
+                    WorkoutLogView(workoutPlanItem: workoutPlanItem)
                 case .newWorkoutLogView:
                     NewWorkoutLogView()
                 }

@@ -11,6 +11,7 @@ struct WorkoutLogItemViewModel: Identifiable {
     let id = UUID()
     let title: String
     let description: String
+    let workoutPlanItem: WorkoutPlanItem
 }
 
 @MainActor
@@ -51,7 +52,7 @@ class WorkoutLogsViewModel: ObservableObject {
                 timeFormatter.dateFormat = "h:mm a"
                 let formattedTime = timeFormatter.string(from: workoutLogDate)
 
-                return WorkoutLogItemViewModel(title: formattedDate, description: formattedTime)
+                return WorkoutLogItemViewModel(title: formattedDate, description: formattedTime, workoutPlanItem: workoutLog)
             }
         } catch {
             errorString = "Something went wrong. Please try again later"

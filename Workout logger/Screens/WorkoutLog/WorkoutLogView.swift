@@ -9,7 +9,10 @@ import SwiftUI
 
 struct WorkoutLogView: View {
 
-    let viewModel = WorkoutLogViewModel()
+    let viewModel: WorkoutLogViewModel
+    init(workoutPlanItem: WorkoutPlanItem) {
+        self.viewModel = WorkoutLogViewModel(workoutPlanItem: workoutPlanItem)
+    }
 
     var body: some View {
         ScrollView {
@@ -42,8 +45,4 @@ struct WorkoutLogView: View {
         .navigationTitle("Log")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-#Preview {
-    WorkoutLogView()
 }

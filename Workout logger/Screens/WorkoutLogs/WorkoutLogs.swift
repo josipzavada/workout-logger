@@ -11,7 +11,7 @@ struct WorkoutLogItem: View {
     let viewModel: WorkoutLogItemViewModel
 
     var body: some View {
-        NavigationLink(value: NavigationState.singleWorkoutLogView) {
+        NavigationLink(value: NavigationState.singleWorkoutLogView(workoutPlanItem: viewModel.workoutPlanItem)) {
             workoutItemButtonLabel
         }
         .buttonStyle(PlainWorkoutLogButton())

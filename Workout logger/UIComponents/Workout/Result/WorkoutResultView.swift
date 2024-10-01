@@ -84,7 +84,7 @@ struct WorkoutResultsView: View {
                     .frame(width: 1, height: 15)
 
             }
-            Text("M1")
+            Text(workoutPathLabel)
                 .font(.system(size: 13))
                 .opacity(0.3)
                 .padding(6)

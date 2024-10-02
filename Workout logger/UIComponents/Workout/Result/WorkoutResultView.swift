@@ -64,15 +64,7 @@ struct WorkoutResultsView: View {
     }
 
     private var workoutPath: some View {
-        VStack {
-            if workoutPathOrder != .first {
-                dottedLine
-                    .frame(height: 20)
-                    .padding(.top, 2)
-            } else {
-                Color.clear.frame(width: 1, height: 15)
-            }
-            
+        VStack(spacing: 0) {
             Text(workoutPathLabel)
                 .font(.system(size: 13))
                 .opacity(0.3)

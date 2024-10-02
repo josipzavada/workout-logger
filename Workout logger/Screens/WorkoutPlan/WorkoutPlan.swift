@@ -64,10 +64,8 @@ struct WorkoutPlan: View {
     private var content: some View {
         if viewModel.isLoading {
             ProgressView()
-        } else if viewModel.errorString != nil {
-            Text(Constants.WorkoutPlan.emptyStateMessage)
         } else if viewModel.workoutPlanItemsViewModels.isEmpty {
-            Text(Constants.WorkoutPlan.errorMessage)
+            EmptyStateView(message: Constants.WorkoutPlan.emptyStateMessage)
         } else {
             planItems
         }

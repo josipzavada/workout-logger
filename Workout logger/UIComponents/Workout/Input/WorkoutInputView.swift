@@ -70,33 +70,27 @@ struct WorkoutInputView: View {
     }
 
     private var workoutPath: some View {
-        VStack {
-            if workoutPathOrder != .first {
-                DottedLine()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
-                    .frame(width: 1, height: 20)
-                    .foregroundColor(Color(.Colors.neutralLine))
-                    .padding(.top, 2)
-            } else {
-                Color.clear.frame(width: 1, height: 15)
-            }
-            
+        VStack(spacing: 0) {
             Text(workoutPathLabel)
                 .font(.system(size: 13))
                 .opacity(0.3)
                 .padding(6)
                 .background(Color(.Colors.paperDark))
                 .clipShape(Circle())
-            
+
             if workoutPathOrder != .last {
-                DottedLine()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
-                    .frame(width: 1)
-                    .foregroundColor(Color(.Colors.neutralLine))
+                dottedLine
             } else {
                 Color.clear.frame(width: 1)
             }
         }
+    }
+    
+    private var dottedLine: some View {
+        DottedLine()
+            .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
+            .frame(width: 1)
+            .foregroundColor(Color(.Colors.neutralLine))
     }
 
     private var shouldHideWeight: Bool {

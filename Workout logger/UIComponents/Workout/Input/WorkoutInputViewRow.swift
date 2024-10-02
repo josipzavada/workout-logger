@@ -136,6 +136,7 @@ struct WorkoutInputTextField: View {
     var body: some View {
         HStack(spacing: 4) {
             TextField(placeholder, value: $value, formatter: NumberFormatter())
+                .keyboardType(.numberPad)
             if let unit = unit {
                 Text(unit)
                     .font(.system(size: 13))

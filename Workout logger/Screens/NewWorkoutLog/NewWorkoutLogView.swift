@@ -22,7 +22,8 @@ struct NewWorkoutLogView: View {
                 .padding(12)
             }
             .scrollIndicators(.hidden)
-            
+            .dismissKeyboardOnTap()
+
             saveButton
         }
         .background(Color(.Colors.paper))

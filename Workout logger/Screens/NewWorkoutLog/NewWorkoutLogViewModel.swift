@@ -27,12 +27,12 @@ struct WorkoutPreviewViewModel: Identifiable {
 class NewWorkoutLogViewModel: ObservableObject {
     var workoutModeViewModel: WorkoutModeViewModel?
     @Published var workoutProgressLabel: String?
+    @Published var workoutPlanItem: WorkoutPlanItem
     @Published var maxInputs = [MaxInputViewModel?]()
-    @Published var workouts: [Workout] = []
     @Published var oneRepMax = 100
 
     init(workoutPlanItem: WorkoutPlanItem) {
-
+        self.workoutPlanItem = workoutPlanItem
         maxInputs = workoutPlanItem.workouts.map { workout in
             if workout.sets.contains(where: {
                 if case .percentageOfMaximum = $0.targetWeight {
@@ -129,8 +129,8 @@ class NewWorkoutLogViewModel: ObservableObject {
 //        displaySupersetWorkout(workoutPlanItem: workoutPlanItem3)
 //        displayTestWorkout(workoutPlanItem: workoutPlanItem4)
 
-        for workoutIndex in workouts.indices {
-            workouts[workoutIndex].oneRepMax = maxInputs[safe: workoutIndex]??.value
+        for workoutIndex in workoutPlanItem.workouts.indices {
+            self.workoutPlanItem.workouts[workoutIndex].oneRepMax = maxInputs[safe: workoutIndex]??.value
         }
     }
 
@@ -140,18 +140,15 @@ class NewWorkoutLogViewModel: ObservableObject {
             return
         }
         workoutModeViewModel = WorkoutModeFormatter.formatPyramidWorkoutMode(workout: workout)
-        workouts = [workout]
     }
 
     func displayEmomWorkout(workoutPlanItem: WorkoutPlanItem) {
         workoutModeViewModel = WorkoutModeFormatter.formatEmomWorkoutMode(workouts: workoutPlanItem.workouts)
-        workouts = workoutPlanItem.workouts
         workoutProgressLabel = "M"
     }
 
     func displaySupersetWorkout(workoutPlanItem: WorkoutPlanItem) {
         workoutModeViewModel = WorkoutModeFormatter.formatSupersetWorkoutMode(workouts: workoutPlanItem.workouts)
-        workouts = workoutPlanItem.workouts
         workoutProgressLabel = "A"
     }
 
@@ -160,15 +157,21 @@ class NewWorkoutLogViewModel: ObservableObject {
             // TODO: show error
             return
         }
-        workouts = [workout]
         workoutModeViewModel = WorkoutModeFormatter.formatTestWorkoutMode(workout: workout)
     }
 
     func saveTapped() {
-        workouts.forEach { workout in
-            workout.sets.forEach { workoutSet in
-                print(workoutSet.volume)
-            }
+        let encoder = JSONEncoder()
+        do {
+            let json = try encoder.encode(workoutPlanItem)
+            print(String(data: json, encoding: .utf8))
+        } catch {
+            print(error)
         }
+//        workouts.forEach { workout in
+//            workout.sets.forEach { workoutSet in
+//                print(workoutSet.volume)
+//            }
+//        }
     }
 }

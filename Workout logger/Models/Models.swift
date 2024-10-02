@@ -42,7 +42,7 @@ struct WorkoutPlanItem: Codable, Hashable {
     let id: Int
     let type: WorkoutType
     let logDate: Date?
-    let workouts: [Workout]
+    var workouts: [Workout]
 
     init(id: Int, type: WorkoutType, logDate: Date? = nil, workouts: [Workout]) {
         self.id = id

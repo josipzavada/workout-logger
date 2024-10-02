@@ -99,7 +99,7 @@ struct WorkoutPlan: View {
             .navigationDestination(for: NavigationState.self) { navigationState in
                 switch navigationState {
                 case .workoutLogsView(let workoutPlanItem):
-                    WorkoutLogs(workoutPlanItem: workoutPlanItem)
+                    WorkoutLogsView(workoutPlanItem: workoutPlanItem)
                 case .singleWorkoutLogView(let workoutPlanItem):
                     WorkoutLogView(workoutPlanItem: workoutPlanItem)
                 case .newWorkoutLogView(let workoutPlanItem):

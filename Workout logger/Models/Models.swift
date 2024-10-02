@@ -92,6 +92,31 @@ struct Workout: Codable, Hashable {
         self.oneRepMax = oneRepMax
         self.sets = sets
     }
+
+    func bestSetIndex() -> Int? {
+        var bestSetIndex: Int? = nil
+        var highestScore: Int = 0
+
+        for (index, set) in sets.enumerated() {
+            let volumeAchieved = set.volume != nil && set.targetVolume.targetAchieved(value: set.volume!, oneRepMax: oneRepMax)
+            var currentScore: Int? = 0
+
+            if volumeAchieved {
+                if set.targetWeight == nil {
+                    currentScore = set.volume
+                } else {
+                    currentScore = set.weight
+                }
+            }
+
+            if currentScore ?? 0 > highestScore {
+                highestScore = currentScore ?? 0
+                bestSetIndex = index
+            }
+        }
+
+        return bestSetIndex
+    }
 }
 
 struct WorkoutSet: Identifiable, Codable, Hashable {

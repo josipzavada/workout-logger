@@ -18,13 +18,11 @@ struct WorkoutInputView: View {
 
     let workoutName: String
     let valueUnit: VolumeUnit
-    @Binding var oneRepMax: Int?
-    @Binding var workoutSets: [WorkoutSet]
-    @State var topSet: Int = 1
+    @Binding var workout: Workout
+    @State var topSetIndex: Int? = nil
 
     var workoutPathOrder: WorkoutPathOrder = .none
     var workoutPathLabel: String = ""
-
 
     var body: some View {
         HStack(spacing: 4) {
@@ -46,28 +44,33 @@ struct WorkoutInputView: View {
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            let shouldHideWeight = workoutSets.allSatisfy { $0.targetWeight == nil }
+            let shouldHideWeight = workout.sets.allSatisfy { $0.targetWeight == nil }
             WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
-            ForEach(Array(workoutSets.enumerated()), id: \.offset) { (index, workoutSet) in
+            ForEach(Array(workout.sets.enumerated()), id: \.offset) { (index, workoutSet) in
                 WorkoutInputRowWithWeight(
                     set: index + 1,
                     targetValue: workoutSet.targetVolume,
                     targetWeight: workoutSet.targetWeight,
-                    oneRepMax: $oneRepMax,
-                    value: $workoutSets[index].volume,
-                    weight: $workoutSets[index].weight
+                    oneRepMax: $workout.oneRepMax,
+                    value: $workout.sets[index].volume,
+                    weight: $workout.sets[index].weight
                 )
+                .onChange(of: workout) {
+                    updateTopSet()
+                }
             }
 
-            Divider()
-            HStack(spacing: 8){
-                Text("Top set:")
-                    .font(.system(size: 15))
-                Text(String(topSet))
-                    .font(.system(size: 20, weight: .bold))
+            if let topSetIndex {
+                Divider()
+                HStack(spacing: 8){
+                    Text("Top set:")
+                        .font(.system(size: 15))
+                    Text(String(topSetIndex + 1))
+                        .font(.system(size: 20, weight: .bold))
+                }
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
         .frame(maxWidth: .infinity)
@@ -112,6 +115,10 @@ struct WorkoutInputView: View {
                     .opacity(0)
             }
         }
+    }
+
+    func updateTopSet() {
+        topSetIndex = workout.bestSetIndex()
     }
 }
 

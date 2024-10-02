@@ -16,15 +16,15 @@ struct WorkoutView: View {
         HStack(spacing: 4) {
             if let target {
                 Text(target)
-                    .foregroundStyle(Color(.Colors.Text._40))
+                    .foregroundColor(Color(.Colors.Text._40))
             }
             Text(name)
-                .foregroundStyle(Color(.Colors.Text._100))
+                .foregroundColor(Color(.Colors.Text._100))
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.Colors.neutralG20))
-        .clipShape(.rect(cornerRadius: 6))
+        .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 }

@@ -12,11 +12,12 @@ struct WorkoutLogButton: ButtonStyle {
         configuration.label
             .frame(maxWidth: .infinity)
             .padding()
-            .background(.black)
-            .foregroundStyle(.white)
-            .clipShape(.rect(cornerRadius: 16))
+            .background(Color.black)
+            .foregroundColor(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(12)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
@@ -24,5 +25,6 @@ struct PlainWorkoutLogButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }

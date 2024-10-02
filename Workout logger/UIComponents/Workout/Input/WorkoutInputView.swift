@@ -8,18 +8,14 @@
 import SwiftUI
 
 enum WorkoutPathOrder {
-    case first
-    case last
-    case middle
-    case none
+    case first, last, middle, none
 }
 
 struct WorkoutInputView: View {
-
     let workoutName: String
     let valueUnit: VolumeUnit
     @Binding var workout: Workout
-    @State var topSetIndex: Int? = nil
+    @State private var topSetIndex: Int? = nil
 
     var workoutPathOrder: WorkoutPathOrder = .none
     var workoutPathLabel: String = ""
@@ -27,27 +23,23 @@ struct WorkoutInputView: View {
     var body: some View {
         HStack(spacing: 4) {
             inputCard
-                .padding(.vertical, 4)
-
-            if (workoutPathOrder != .none) {
+            if workoutPathOrder != .none {
                 workoutPath
             }
         }
     }
 
-    var inputCard: some View {
-        VStack(spacing: 12) {
+    private var inputCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
             Text(workoutName)
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Divider()
-                .foregroundStyle(Color(.Colors.paperDark))
+            
+            Divider().foregroundStyle(Color(.Colors.paperDark))
 
-            let shouldHideWeight = workout.sets.allSatisfy { $0.targetWeight == nil }
             WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
-            ForEach(Array(workout.sets.enumerated()), id: \.offset) { (index, workoutSet) in
+            ForEach(Array(workout.sets.enumerated()), id: \.offset) { index, workoutSet in
                 WorkoutInputRowWithWeight(
                     set: index + 1,
                     targetValue: workoutSet.targetVolume,
@@ -56,77 +48,62 @@ struct WorkoutInputView: View {
                     value: $workout.sets[index].volume,
                     weight: $workout.sets[index].weight
                 )
-                .onChange(of: workout) {
-                    updateTopSet()
-                }
             }
+            .onChange(of: workout) { updateTopSet() }
 
             if let topSetIndex {
                 Divider()
-                HStack(spacing: 8){
+                HStack(spacing: 8) {
                     Text(Constants.WorkoutLog.topSet)
                         .font(.system(size: 15))
                     Text(String(topSetIndex + 1))
                         .font(.system(size: 20, weight: .bold))
                 }
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(16)
         .frame(maxWidth: .infinity)
         .background(.white)
-        .clipShape(.rect(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .roundedStrokeOverlay()
+        .padding(.vertical, 4)
     }
 
-    @ViewBuilder
-    var workoutPath: some View {
-
-        let isFirst = workoutPathOrder == .first
-        let isLast = workoutPathOrder == .last
-
+    private var workoutPath: some View {
         VStack {
-            if (!isFirst) {
+            if workoutPathOrder != .first {
                 DottedLine()
                     .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
                     .frame(width: 1, height: 20)
                     .foregroundColor(Color(.Colors.neutralLine))
                     .padding(.top, 2)
             } else {
-                Rectangle()
-                    .opacity(0)
-                    .frame(width: 1, height: 15)
-
+                Color.clear.frame(width: 1, height: 15)
             }
+            
             Text(workoutPathLabel)
                 .font(.system(size: 13))
                 .opacity(0.3)
                 .padding(6)
                 .background(Color(.Colors.paperDark))
-                .clipShape(.circle)
-            if (!isLast) {
+                .clipShape(Circle())
+            
+            if workoutPathOrder != .last {
                 DottedLine()
                     .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
                     .frame(width: 1)
                     .foregroundColor(Color(.Colors.neutralLine))
             } else {
-                Rectangle()
-                    .frame(width: 1)
-                    .opacity(0)
+                Color.clear.frame(width: 1)
             }
         }
     }
 
-    func updateTopSet() {
-        topSetIndex = workout.bestSetIndex()
+    private var shouldHideWeight: Bool {
+        workout.sets.allSatisfy { $0.targetWeight == nil }
     }
-}
 
-struct DottedLine: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: 0, y: rect.height))
-        return path
+    private func updateTopSet() {
+        topSetIndex = workout.bestSetIndex()
     }
 }

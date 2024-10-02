@@ -13,25 +13,24 @@ struct WorkoutMaxView: View {
     let maxValue: Int
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("\(title) \(Constants.WorkoutLog.oneRepMaxSuffix)")
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            
             Divider()
-                .foregroundStyle(Color(.Colors.paperDark))
+                .background(Color(.Colors.paperDark))
 
             Text(Constants.WorkoutLog.weight)
                 .font(.system(size: 13))
                 .foregroundStyle(Color(.Colors.Text._40))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            
             Text("\(maxValue) \(Constants.WorkoutLog.kg)")
-                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(.white)
-        .clipShape(.rect(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .roundedStrokeOverlay()
     }
 }

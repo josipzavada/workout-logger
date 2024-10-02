@@ -17,27 +17,24 @@ struct WorkoutResultsView: View {
     var body: some View {
         HStack(spacing: 4) {
             inputCard
-                .padding(.vertical, 4)
-
-            if (workoutPathOrder != .none) {
+            if workoutPathOrder != .none {
                 workoutPath
             }
         }
     }
 
-    var inputCard: some View {
-        VStack(spacing: 12) {
+    private var inputCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
             Text(workoutName)
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            
             Divider()
-                .foregroundStyle(Color(.Colors.paperDark))
+                .background(Color(.Colors.paperDark))
 
-            let shouldHideWeight = workout.sets.allSatisfy { $0.targetWeight == nil }
             WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
-            ForEach(Array(workout.sets.enumerated()), id: \.offset) { (index, workoutSet) in
+            ForEach(Array(workout.sets.enumerated()), id: \.offset) { index, workoutSet in
                 WorkoutResultRowWithWeight(
                     set: index + 1,
                     targetValue: workoutSet.targetVolume,
@@ -50,57 +47,55 @@ struct WorkoutResultsView: View {
 
             if let topSet = workout.bestSetIndex() {
                 Divider()
-                HStack(spacing: 8){
+                HStack(spacing: 8) {
                     Text(Constants.WorkoutLog.topSet)
                         .font(.system(size: 15))
                     Text(String(topSet + 1))
                         .font(.system(size: 20, weight: .bold))
                 }
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(16)
         .frame(maxWidth: .infinity)
         .background(.white)
-        .clipShape(.rect(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .roundedStrokeOverlay()
+        .padding(.vertical, 4)
     }
 
-    @ViewBuilder
-    var workoutPath: some View {
-
-        let isFirst = workoutPathOrder == .first
-        let isLast = workoutPathOrder == .last
-
+    private var workoutPath: some View {
         VStack {
-            if (!isFirst) {
-                DottedLine()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
-                    .frame(width: 1, height: 20)
-                    .foregroundColor(Color(.Colors.neutralLine))
+            if workoutPathOrder != .first {
+                dottedLine
+                    .frame(height: 20)
                     .padding(.top, 2)
             } else {
-                Rectangle()
-                    .opacity(0)
-                    .frame(width: 1, height: 15)
-
+                Color.clear.frame(width: 1, height: 15)
             }
+            
             Text(workoutPathLabel)
                 .font(.system(size: 13))
                 .opacity(0.3)
                 .padding(6)
                 .background(Color(.Colors.paperDark))
-                .clipShape(.circle)
-            if (!isLast) {
-                DottedLine()
-                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
-                    .frame(width: 1)
-                    .foregroundColor(Color(.Colors.neutralLine))
+                .clipShape(Circle())
+            
+            if workoutPathOrder != .last {
+                dottedLine
             } else {
-                Rectangle()
-                    .frame(width: 1)
-                    .opacity(0)
+                Color.clear.frame(width: 1)
             }
         }
+    }
+
+    private var dottedLine: some View {
+        DottedLine()
+            .stroke(style: StrokeStyle(lineWidth: 2, dash: [3]))
+            .frame(width: 1)
+            .foregroundColor(Color(.Colors.neutralLine))
+    }
+
+    private var shouldHideWeight: Bool {
+        workout.sets.allSatisfy { $0.targetWeight == nil }
     }
 }

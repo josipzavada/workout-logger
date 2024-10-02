@@ -64,22 +64,22 @@ struct WorkoutInputRowWithWeight: View {
                 targetAchieved: $targetValueAchieved,
                 value: $value
             )
-            .onChange(of: value) { _ in checkIfTargetAchieved() }
+            .onChange(of: value) { checkIfTargetAchieved() }
         }
         .frame(maxWidth: .infinity)
     }
     
     private var weightAndCheckmark: some View {
         HStack(spacing: 8) {
-            if let targetWeight = targetWeight {
+            if targetWeight != nil {
                 WorkoutInputTextField(
                     placeholder: weightPlaceholder,
                     unit: Constants.WorkoutLog.kg,
                     targetAchieved: $targetWeightAchieved,
                     value: $weight
                 )
-                .onChange(of: weight) { _ in checkIfTargetAchieved() }
-                .onChange(of: oneRepMax) { _ in
+                .onChange(of: weight) { checkIfTargetAchieved() }
+                .onChange(of: oneRepMax) {
                     updateWeightPlaceholder()
                     checkIfTargetAchieved()
                 }

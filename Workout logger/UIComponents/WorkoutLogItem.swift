@@ -12,32 +12,28 @@ struct WorkoutLogItem: View {
 
     var body: some View {
         NavigationLink(value: NavigationState.singleWorkoutLogView(workoutPlanItem: viewModel.workoutPlanItem)) {
-            workoutItemButtonLabel
+            HStack {
+                workoutAndDescriptionView
+                Spacer(minLength: 0)
+                Image(systemName: Constants.SystemImages.chevronRight)
+            }
+            .padding(16)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .roundedStrokeOverlay()
+            .padding(.vertical, 4)
         }
         .buttonStyle(PlainWorkoutLogButton())
     }
 
-    var workoutItemButtonLabel: some View {
-        HStack {
-            workoutAndDescriptionView
-            Spacer(minLength: 0)
-            Image(systemName: Constants.SystemImages.chevronRight)
-        }
-        .padding(16)
-        .background(.white)
-        .clipShape(.rect(cornerRadius: 16))
-        .roundedStrokeOverlay()
-        .padding(.vertical, 4)
-    }
-
-    var workoutAndDescriptionView: some View {
+    private var workoutAndDescriptionView: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(viewModel.title)
-                .foregroundStyle(Color(.Colors.Text._100))
+                .foregroundColor(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
             Text(viewModel.description)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Color(.Colors.Text._60))
+                .foregroundColor(Color(.Colors.Text._60))
         }
     }
 }

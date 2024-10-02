@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct NewWorkoutLogView: View {
-
     @ObservedObject var viewModel: NewWorkoutLogViewModel
     @EnvironmentObject var navigationPathModel: NavigationPathModel
 
@@ -16,57 +15,77 @@ struct NewWorkoutLogView: View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
-                        WorkoutModeView(viewModel: workoutPreviewViewModel)
-                    }
-                    ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { index, workout in
-                        if viewModel.shouldShowOneRepMax(for: workout) {
-                            WorkoutMaxInputView(title: workout.name, maxValue: $viewModel.workoutPlanItem.workouts[index].oneRepMax)
-                        }
-                    }
-                    ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { (index, workout) in
-
-                        let workoutPathOrder: WorkoutPathOrder = WorkoutModeFormatter.workoutPathOrder(index: index, numberOfWorkouts: viewModel.workoutPlanItem.workouts.count)
-
-                        WorkoutInputView(
-                            workoutName: workout.name,
-                            valueUnit: workout.volumeUnit,
-                            workout: $viewModel.workoutPlanItem.workouts[index],
-                            workoutPathOrder: viewModel.workoutProgressLabel != nil ? workoutPathOrder : .none,
-                            workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
-                        )
-                    }
+                    workoutModeView
+                    oneRepMaxInputs
+                    workoutInputs
                 }
                 .padding(12)
             }
-            .scrollIndicators(.never)
-            Button {
-                Task {
-                    await viewModel.saveTapped()
-                    if !viewModel.showError {
-                        navigationPathModel.path.removeLast()
-                    }
-                }
-            } label: {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .tint(.white)
-                } else {
-                    Text(Constants.General.save)
-                }
-            }
-            .buttonStyle(WorkoutLogButton())
-            .alert(Constants.General.error, isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
-                Button(Constants.General.ok) {
-                    viewModel.showError = false
-                }
-            } message: { errorMessage in
-                Text(errorMessage)
-            }
+            .scrollIndicators(.hidden)
+            
+            saveButton
         }
         .background(Color(.Colors.paper))
         .navigationTitle(Constants.WorkoutLog.newLog)
         .navigationBarTitleDisplayMode(.inline)
+        .alert(Constants.General.error, isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
+            Button(Constants.General.ok) {
+                viewModel.showError = false
+            }
+        } message: { errorMessage in
+            Text(errorMessage)
+        }
+    }
+    
+    @ViewBuilder
+    private var workoutModeView: some View {
+        if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
+            WorkoutModeView(viewModel: workoutPreviewViewModel)
+        }
+    }
+    
+    private var oneRepMaxInputs: some View {
+        ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { index, workout in
+            if viewModel.shouldShowOneRepMax(for: workout) {
+                WorkoutMaxInputView(title: workout.name, maxValue: $viewModel.workoutPlanItem.workouts[index].oneRepMax)
+            }
+        }
+    }
+    
+    private var workoutInputs: some View {
+        ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { (index, workout) in
+            WorkoutInputView(
+                workoutName: workout.name,
+                valueUnit: workout.volumeUnit,
+                workout: $viewModel.workoutPlanItem.workouts[index],
+                workoutPathOrder: workoutPathOrder(for: index),
+                workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
+            )
+        }
+    }
+    
+    private func workoutPathOrder(for index: Int) -> WorkoutPathOrder {
+        viewModel.workoutProgressLabel != nil
+            ? WorkoutModeFormatter.workoutPathOrder(index: index, numberOfWorkouts: viewModel.workoutPlanItem.workouts.count)
+            : .none
+    }
+    
+    private var saveButton: some View {
+        Button {
+            Task {
+                await viewModel.saveTapped()
+                if !viewModel.showError {
+                    navigationPathModel.path.removeLast()
+                }
+            }
+        } label: {
+            if viewModel.isLoading {
+                ProgressView().tint(.white)
+            } else {
+                Text(Constants.General.save)
+            }
+        }
+        .buttonStyle(WorkoutLogButton())
     }
 }
 

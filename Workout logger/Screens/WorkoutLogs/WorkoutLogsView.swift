@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct WorkoutLogsView: View {
-
     private let workoutPlanItem: WorkoutPlanItem
     @StateObject private var viewModel = WorkoutLogsViewModel()
 
@@ -17,52 +16,53 @@ struct WorkoutLogsView: View {
     }
 
     var body: some View {
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .safeAreaInset(edge: .bottom, content: bottomButton)
+            .task { await viewModel.fetchWorkoutLogs(planId: workoutPlanItem.id) }
+            .background(Color(.Colors.paper))
+            .navigationTitle(Constants.WorkoutLog.logs)
+            .alert(isPresented: $viewModel.showErrorAlert, content: errorAlert)
+    }
 
-        Group {
-            if viewModel.isLoading {
-                progressView
-            } else if viewModel.workoutLogItemViewModels.isEmpty {
-                EmptyStateView(message: Constants.WorkoutLog.emptyStateMessage)
-            } else {
-                logItems
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .bottom) {
-            if viewModel.errorString == nil && !viewModel.isLoading {
-                NavigationLink(value: NavigationState.newWorkoutLogView(workoutPlanItem: workoutPlanItem)) {
-                    Text(Constants.WorkoutLog.addNew)
-                }
-                .buttonStyle(WorkoutLogButton())
-            }
-        }
-        .task {
-            await viewModel.fetchWorkoutLogs(planId: workoutPlanItem.id)
-        }
-        .background(Color(.Colors.paper))
-        .navigationTitle(Constants.WorkoutLog.logs)
-        .alert(isPresented: $viewModel.showErrorAlert) {
-            Alert(
-                title: Text(Constants.General.error),
-                message: Text(viewModel.errorString ?? Constants.WorkoutPlan.errorMessage),
-                dismissButton: .default(Text(Constants.General.ok))
-            )
+    @ViewBuilder
+    private var content: some View {
+        if viewModel.isLoading {
+            ProgressView()
+        } else if viewModel.workoutLogItemViewModels.isEmpty {
+            EmptyStateView(message: Constants.WorkoutLog.emptyStateMessage)
+        } else {
+            logItems
         }
     }
 
-    var progressView: some View {
-        ProgressView()
+    @ViewBuilder
+    private func bottomButton() -> some View {
+        if viewModel.errorString == nil && !viewModel.isLoading {
+            NavigationLink(value: NavigationState.newWorkoutLogView(workoutPlanItem: workoutPlanItem)) {
+                Text(Constants.WorkoutLog.addNew)
+            }
+            .buttonStyle(WorkoutLogButton())
+        }
     }
 
-    var logItems: some View {
+    private var logItems: some View {
         ScrollView {
-            VStack(spacing: 0) {
-                ForEach(viewModel.workoutLogItemViewModels) {
-                    WorkoutLogItem(viewModel: $0)
+            LazyVStack(spacing: 0) {
+                ForEach(viewModel.workoutLogItemViewModels) { viewModel in
+                    WorkoutLogItem(viewModel: viewModel)
                 }
             }
             .padding(12)
         }
+    }
+
+    private func errorAlert() -> Alert {
+        Alert(
+            title: Text(Constants.General.error),
+            message: Text(viewModel.errorString ?? Constants.WorkoutPlan.errorMessage),
+            dismissButton: .default(Text(Constants.General.ok))
+        )
     }
 }
 

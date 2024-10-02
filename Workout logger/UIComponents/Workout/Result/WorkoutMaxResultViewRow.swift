@@ -7,18 +7,14 @@
 
 import SwiftUI
 
-struct WorkoutMaxViewModel {
-    let title: String
-    let maxValue: Int
-}
-
 struct WorkoutMaxView: View {
 
-    let viewModel: WorkoutMaxViewModel
+    let title: String
+    let maxValue: Int
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("\(viewModel.title) \(Constants.WorkoutLog.oneRepMaxSuffix)")
+            Text("\(title) \(Constants.WorkoutLog.oneRepMaxSuffix)")
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -29,7 +25,7 @@ struct WorkoutMaxView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(Color(.Colors.Text._40))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("\(viewModel.maxValue) \(Constants.WorkoutLog.kg)")
+            Text("\(maxValue) \(Constants.WorkoutLog.kg)")
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)

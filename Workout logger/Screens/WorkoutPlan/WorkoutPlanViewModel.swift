@@ -16,41 +16,58 @@ struct WorkoutPlanItemViewModel: Identifiable {
 
 @MainActor
 class WorkoutPlanViewModel: ObservableObject {
-    @Published var isLoading = true
-    @Published var errorString: String?
-    @Published var workoutPlanItemsViewModels = [WorkoutPlanItemViewModel]()
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorString: String?
+    @Published private(set) var workoutPlanItemsViewModels = [WorkoutPlanItemViewModel]()
     @Published var showErrorAlert = false
 
-    private let networkService = NetworkService.shared
+    private let networkService: NetworkServiceProtocol
+
+    init(networkService: NetworkServiceProtocol = NetworkService.shared) {
+        self.networkService = networkService
+    }
 
     func fetchPlanItems() async {
         isLoading = true
         errorString = nil
-        workoutPlanItemsViewModels = []
+        workoutPlanItemsViewModels.removeAll()
         
         do {
             let workoutPlans = try await networkService.fetchWorkoutPlans()
             workoutPlanItemsViewModels = workoutPlans.map(createWorkoutPlanItemViewModel)
-            isLoading = false
         } catch {
             errorString = Constants.WorkoutPlan.fetchErrorMessage
             showErrorAlert = true
-            print(error) // For debugging purposes
+            #if DEBUG
+            print("Error fetching workout plans: \(error)")
+            #endif
         }
+        
+        isLoading = false
     }
 
     private func createWorkoutPlanItemViewModel(from workoutPlanItem: WorkoutPlanItem) -> WorkoutPlanItemViewModel {
-        let firstWorkout = workoutPlanItem.workouts.first
-        let description = switch workoutPlanItem.type {
+        let description = getDescription(for: workoutPlanItem)
+        return WorkoutPlanItemViewModel(
+            id: workoutPlanItem.id,
+            workoutPlanItem: workoutPlanItem,
+            title: workoutPlanItem.type.rawValue.capitalized,
+            description: description
+        )
+    }
+
+    private func getDescription(for workoutPlanItem: WorkoutPlanItem) -> String {
+        switch workoutPlanItem.type {
         case .emom:
-            WorkoutModeFormatter.formatEmomTarget(workouts: workoutPlanItem.workouts)
-        case .pyramid:
-            firstWorkout != nil ? WorkoutModeFormatter.formatPyramidTarget(workout: firstWorkout!) : ""
+            return WorkoutModeFormatter.formatEmomTarget(workouts: workoutPlanItem.workouts)
+        case .pyramid, .test:
+            return workoutPlanItem.workouts.first.map { workout in
+                workoutPlanItem.type == .pyramid
+                    ? WorkoutModeFormatter.formatPyramidTarget(workout: workout)
+                    : WorkoutModeFormatter.formatTestTarget(workout: workout)
+            } ?? ""
         case .superset:
-            WorkoutModeFormatter.formatSupersetTarget(workouts: workoutPlanItem.workouts)
-        case .test:
-            firstWorkout != nil ? WorkoutModeFormatter.formatTestTarget(workout: firstWorkout!) : ""
+            return WorkoutModeFormatter.formatSupersetTarget(workouts: workoutPlanItem.workouts)
         }
-        return WorkoutPlanItemViewModel(id: workoutPlanItem.id, workoutPlanItem: workoutPlanItem, title: workoutPlanItem.type.rawValue.capitalized, description: description)
     }
 }

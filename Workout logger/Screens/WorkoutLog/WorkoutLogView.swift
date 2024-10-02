@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct WorkoutLogView: View {
+     let viewModel: WorkoutLogViewModel
 
-    let viewModel: WorkoutLogViewModel
     init(workoutPlanItem: WorkoutPlanItem) {
         self.viewModel = WorkoutLogViewModel(workoutPlanItem: workoutPlanItem)
     }
@@ -17,31 +17,51 @@ struct WorkoutLogView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
-                    WorkoutModeView(viewModel: workoutPreviewViewModel)
-                }
-                ForEach(Array(viewModel.maxViews.enumerated()), id: \.offset) { index, maxViewModel in
-                    if let maxViewModel {
-                        WorkoutMaxView(viewModel: maxViewModel)
-                    }
-                }
-                ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { (index, workout) in
-
-                    let workoutPathOrder = WorkoutModeFormatter.workoutPathOrder(index: index, numberOfWorkouts: viewModel.workouts.count)
-
-                    WorkoutResultsView(
-                        workoutName: workout.name,
-                        valueUnit: workout.volumeUnit,
-                        workout: viewModel.workouts[index],
-                        workoutPathOrder: viewModel.workoutProgressLabel != nil ? workoutPathOrder : .none,
-                        workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
-                    )
-                }
+                workoutModeView
+                maxViews
+                workoutResultsViews
             }
             .padding(12)
         }
         .background(Color(.Colors.paper))
         .navigationTitle(Constants.WorkoutLog.log)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    private var workoutModeView: some View {
+        if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
+            WorkoutModeView(viewModel: workoutPreviewViewModel)
+        }
+    }
+
+    private var maxViews: some View {
+        ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { index, workout in
+            if viewModel.shouldShowOneRepMax(for: workout), let oneRepMax = workout.oneRepMax {
+                WorkoutMaxView(title: workout.name, maxValue: oneRepMax)
+            }
+        }
+    }
+
+    private var workoutResultsViews: some View {
+        ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { index, workout in
+            WorkoutResultsView(
+                workoutName: workout.name,
+                valueUnit: workout.volumeUnit,
+                workout: workout,
+                workoutPathOrder: workoutPathOrder(for: index),
+                workoutPathLabel: workoutPathLabel(for: index)
+            )
+        }
+    }
+
+    private func workoutPathOrder(for index: Int) -> WorkoutPathOrder {
+        viewModel.workoutProgressLabel != nil
+            ? WorkoutModeFormatter.workoutPathOrder(index: index, numberOfWorkouts: viewModel.workouts.count)
+            : .none
+    }
+
+    private func workoutPathLabel(for index: Int) -> String {
+        "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
     }
 }

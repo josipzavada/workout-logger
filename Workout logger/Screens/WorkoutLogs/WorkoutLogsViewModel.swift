@@ -16,17 +16,29 @@ struct WorkoutLogItemViewModel: Identifiable {
 
 @MainActor
 class WorkoutLogsViewModel: ObservableObject {
-    @Published var isLoading = true
-    @Published var errorString: String?
-    @Published var workoutLogItemViewModels = [WorkoutLogItemViewModel]()
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorString: String?
+    @Published private(set) var workoutLogItemViewModels = [WorkoutLogItemViewModel]()
     @Published var showErrorAlert = false
     
-    private let networkService = NetworkService.shared
+    private let networkService: NetworkServiceProtocol
+    private let dateFormatter: DateFormatter
+    private let timeFormatter: DateFormatter
+    
+    init(networkService: NetworkServiceProtocol = NetworkService.shared) {
+        self.networkService = networkService
+        
+        self.dateFormatter = DateFormatter()
+        self.dateFormatter.dateFormat = "d.M.yyyy."
+        
+        self.timeFormatter = DateFormatter()
+        self.timeFormatter.dateFormat = "h:mm a"
+    }
 
     func fetchWorkoutLogs(planId: Int) async {
         isLoading = true
         errorString = nil
-        workoutLogItemViewModels = []
+        workoutLogItemViewModels.removeAll()
         
         do {
             let workoutLogs = try await networkService.fetchWorkoutLogs(planId: planId)
@@ -41,14 +53,13 @@ class WorkoutLogsViewModel: ObservableObject {
     private func createWorkoutLogItemViewModel(from workoutLog: WorkoutPlanItem) -> WorkoutLogItemViewModel? {
         guard let workoutLogDate = workoutLog.logDate else { return nil }
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d.M.yyyy."
         let formattedDate = dateFormatter.string(from: workoutLogDate)
-
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "h:mm a"
         let formattedTime = timeFormatter.string(from: workoutLogDate)
 
-        return WorkoutLogItemViewModel(title: formattedDate, description: formattedTime, workoutPlanItem: workoutLog)
+        return WorkoutLogItemViewModel(
+            title: formattedDate,
+            description: formattedTime,
+            workoutPlanItem: workoutLog
+        )
     }
 }

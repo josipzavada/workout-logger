@@ -145,7 +145,9 @@ private struct ApiWorkoutTarget: Codable {
             return nil
         }
     }
+}
 
+private extension ApiWorkoutTarget {
     var asWorkoutTarget: WorkoutTarget {
         switch type {
         case "percentageOfMaximum":

@@ -41,7 +41,9 @@ struct NewWorkoutLogView: View {
             }
             .scrollIndicators(.never)
             Button {
-                viewModel.saveTapped()
+                Task {
+                    await viewModel.saveTapped()
+                }
             } label: {
                 Text("Save")
             }

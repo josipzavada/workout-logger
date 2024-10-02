@@ -160,18 +160,31 @@ class NewWorkoutLogViewModel: ObservableObject {
         workoutModeViewModel = WorkoutModeFormatter.formatTestWorkoutMode(workout: workout)
     }
 
-    func saveTapped() {
+    func saveTapped() async {
+        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/\(workoutPlanItem.id)/add-log") else {
+            print("Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
         let encoder = JSONEncoder()
         do {
-            let json = try encoder.encode(workoutPlanItem)
-            print(String(data: json, encoding: .utf8))
+            let jsonData = try encoder.encode(workoutPlanItem)
+            request.httpBody = jsonData
+            let (data, response) = try await URLSession.shared.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse {
+                print("Response status code: \(httpResponse.statusCode)")
+            }
+            if let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) {
+                print("Response JSON: \(jsonResponse)")
+            } else {
+                print("JSON decoding failed but here is the response: \(String(data: data, encoding: .utf8))")
+            }
         } catch {
-            print(error)
+            print("Error: \(error)")
         }
-//        workouts.forEach { workout in
-//            workout.sets.forEach { workoutSet in
-//                print(workoutSet.volume)
-//            }
-//        }
     }
 }

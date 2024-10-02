@@ -53,12 +53,14 @@ struct WorkoutPlanItem: Codable, Hashable {
 }
 
 struct Workout: Codable, Hashable {
+    let id: Int
     let name: String
     let volumeUnit: VolumeUnit
     var oneRepMax: Int?
     var sets: [WorkoutSet]
 
-    init(name: String, volumeUnit: VolumeUnit, oneRepMax: Int? = nil, sets: [WorkoutSet]) {
+    init(id: Int, name: String, volumeUnit: VolumeUnit, oneRepMax: Int? = nil, sets: [WorkoutSet]) {
+        self.id = id
         self.name = name
         self.volumeUnit = volumeUnit
         self.oneRepMax = oneRepMax

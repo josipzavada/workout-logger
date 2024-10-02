@@ -86,7 +86,7 @@ enum WorkoutModeFormatter {
     }
 
     static func formatEmomTarget(workouts: [Workout]) -> String {
-        let numberOfRounds = workouts.map { $0.sets.count }.reduce(0, +)
+        let numberOfRounds = workouts.reduce(0) { $0 + $1.sets.count }
         return "\(numberOfRounds) \(Constants.WorkoutMode.rounds)"
     }
 
@@ -94,54 +94,24 @@ enum WorkoutModeFormatter {
         let workoutsSetsCount = workouts.map { $0.sets.count }
         let areAllSetsEqual = workoutsSetsCount.allSatisfy { $0 == workoutsSetsCount.first }
 
-        let targetValue = workouts.first?.sets.first?.targetVolume
-        let targetWeight = workouts.first?.sets.first?.targetWeight
-        let targetValueUnit = workouts.first?.volumeUnit
+        var description = areAllSetsEqual ? "\(workoutsSetsCount.first ?? 0) x " : ""
 
-        let areAllValueTargetsEqual = workouts.allSatisfy { workout in
-            return workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetValue }
-        }
+        let firstWorkout = workouts.first
+        let targetValue = firstWorkout?.sets.first?.targetVolume
+        let targetWeight = firstWorkout?.sets.first?.targetWeight
+        let targetValueUnit = firstWorkout?.volumeUnit
 
-        let areAllWeightTargetsEqual = workouts.allSatisfy { workout in
-            return workout.sets.allSatisfy { workoutSet in workoutSet.targetWeight == targetValue }
-        }
-
-        var valueAndWeightDescription = ""
-
-        if areAllSetsEqual, let fistSetCount =  workoutsSetsCount.first {
-            valueAndWeightDescription += "\(fistSetCount) x"
-        }
+        let areAllValueTargetsEqual = workouts.allSatisfy { $0.sets.allSatisfy { $0.targetVolume == targetValue } }
+        let areAllWeightTargetsEqual = workouts.allSatisfy { $0.sets.allSatisfy { $0.targetWeight == targetWeight } }
 
         if areAllValueTargetsEqual {
-            valueAndWeightDescription += " "
-            switch targetValue {
-            case .maximum:
-                valueAndWeightDescription += "\(Constants.WorkoutMode.max) \(targetValueUnit?.name ?? "")"
-            case .percentageOfMaximum(let percentage):
-                valueAndWeightDescription += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
-            case .exact(let exactTarget):
-                valueAndWeightDescription += "\(exactTarget) \(targetValueUnit?.name ?? "")"
-            case .interval(let minTarget, let maxTarget):
-                valueAndWeightDescription += "\(minTarget)-\(maxTarget) \(targetValueUnit?.name ?? "")"
-            case .none:
-                break
-            }
+            description += formatTargetValue(targetValue, unit: targetValueUnit?.name ?? "")
+        }
+        if areAllWeightTargetsEqual {
+            description += " " + formatTargetWeight(targetWeight)
         }
 
-        if areAllWeightTargetsEqual {
-            valueAndWeightDescription += " "
-            switch targetWeight {
-            case .maximum:
-                valueAndWeightDescription += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
-            case .exact(let exactTarget):
-                valueAndWeightDescription += "\(exactTarget) \(Constants.WorkoutLog.kg)"
-            case .interval(let minTarget, let maxTarget):
-                valueAndWeightDescription += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
-            case .percentageOfMaximum, .none:
-                break
-            }
-        }
-        return valueAndWeightDescription
+        return description.trimmingCharacters(in: .whitespaces)
     }
 
     static func formatTestTarget(workout: Workout) -> String {
@@ -149,45 +119,48 @@ enum WorkoutModeFormatter {
         let targetWeight = workout.sets.first?.targetWeight
         let targetValueUnit = workout.volumeUnit
 
-        let areAllValueTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetValue }
-        let areAllWeightTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetWeight == targetWeight }
+        let areAllValueTargetsEqual = workout.sets.allSatisfy { $0.targetVolume == targetValue }
+        let areAllWeightTargetsEqual = workout.sets.allSatisfy { $0.targetWeight == targetWeight }
 
-        var workoutValueAndWeight = ""
+        var description = "\(workout.sets.count) x "
         if areAllValueTargetsEqual {
-            switch targetValue {
-            case .maximum:
-                workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(targetValueUnit.name)"
-            case .percentageOfMaximum(let percentage):
-                workoutValueAndWeight += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
-            case .exact(let exactTarget):
-                workoutValueAndWeight += "\(exactTarget) \(targetValueUnit.name)"
-            case .interval(let minTarget, let maxTarget):
-                workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(targetValueUnit.name)"
-            case .none:
-                break
-            }
+            description += formatTargetValue(targetValue, unit: targetValueUnit.name)
         }
-
         if areAllWeightTargetsEqual {
-            if workoutValueAndWeight != "" {
-                workoutValueAndWeight += " @ "
-            }
-            switch targetWeight {
-            case .maximum:
-                workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
-            case .exact(let exactTarget):
-                workoutValueAndWeight += "\(exactTarget) \(Constants.WorkoutLog.kg)"
-            case .interval(let minTarget, let maxTarget):
-                workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
-            case .percentageOfMaximum(let percentage):
-                workoutValueAndWeight += "\(percentage) % \(Constants.WorkoutLog.oneRepMaxSuffix)"
-            case .none:
-                break
-            }
+            description += (description.hasSuffix("x ") ? "" : " @ ") + formatTargetWeight(targetWeight)
         }
 
-        workoutValueAndWeight = "\(workout.sets.count) x \(workoutValueAndWeight)"
-        return workoutValueAndWeight
+        return description.trimmingCharacters(in: .whitespaces)
+    }
+
+    static func formatTargetValue(_ targetValue: WorkoutTarget?, unit: String) -> String {
+        switch targetValue {
+        case .maximum:
+            return "\(Constants.WorkoutMode.max) \(unit)"
+        case .percentageOfMaximum(let percentage):
+            return "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
+        case .exact(let exactTarget):
+            return "\(exactTarget) \(unit)"
+        case .interval(let minTarget, let maxTarget):
+            return "\(minTarget)-\(maxTarget) \(unit)"
+        case .none:
+            return ""
+        }
+    }
+
+    static func formatTargetWeight(_ targetWeight: WorkoutTarget?) -> String {
+        switch targetWeight {
+        case .maximum:
+            return "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
+        case .exact(let exactTarget):
+            return "\(exactTarget) \(Constants.WorkoutLog.kg)"
+        case .interval(let minTarget, let maxTarget):
+            return "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
+        case .percentageOfMaximum(let percentage):
+            return "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
+        case .none:
+            return ""
+        }
     }
 
     static func workoutPathOrder(index: Int, numberOfWorkouts: Int) -> WorkoutPathOrder {

@@ -15,4 +15,5 @@ enum NavigationState: Hashable {
 
 class NavigationPathModel: ObservableObject {
     @Published var path = [NavigationState]()
+    @Published var shouldRefreshWorkoutLogs = false
 }

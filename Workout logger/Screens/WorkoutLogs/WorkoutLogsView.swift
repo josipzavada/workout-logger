@@ -7,9 +7,24 @@
 
 import SwiftUI
 
+// Define a custom environment key
+struct RefreshWorkoutLogsKey: EnvironmentKey {
+    static let defaultValue: Binding<Bool> = .constant(false)
+}
+
+// Extend EnvironmentValues to include our custom key
+extension EnvironmentValues {
+    var refreshWorkoutLogs: Binding<Bool> {
+        get { self[RefreshWorkoutLogsKey.self] }
+        set { self[RefreshWorkoutLogsKey.self] = newValue }
+    }
+}
+
 struct WorkoutLogsView: View {
     private let workoutPlanItem: WorkoutPlanItem
     @StateObject private var viewModel = WorkoutLogsViewModel()
+    @State private var hasAppeared = false
+    @EnvironmentObject var navigationPathModel: NavigationPathModel
 
     init(workoutPlanItem: WorkoutPlanItem) {
         self.workoutPlanItem = workoutPlanItem
@@ -19,7 +34,13 @@ struct WorkoutLogsView: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .safeAreaInset(edge: .bottom, content: bottomButton)
-            .task { await viewModel.fetchWorkoutLogs(planId: workoutPlanItem.id) }
+            .task {
+                if !hasAppeared || navigationPathModel.shouldRefreshWorkoutLogs {
+                    await viewModel.fetchWorkoutLogs(planId: workoutPlanItem.id)
+                    navigationPathModel.shouldRefreshWorkoutLogs = false
+                    hasAppeared = true
+                }
+            }
             .background(Color(.Colors.paper))
             .navigationTitle(Constants.WorkoutLog.logs)
             .alert(isPresented: $viewModel.showErrorAlert, content: errorAlert)

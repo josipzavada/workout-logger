@@ -76,6 +76,7 @@ struct NewWorkoutLogView: View {
             Task {
                 await viewModel.saveTapped()
                 if !viewModel.showError {
+                    navigationPathModel.shouldRefreshWorkoutLogs = true
                     navigationPathModel.path.removeLast()
                 }
             }

@@ -10,9 +10,7 @@ import SwiftUI
 struct WorkoutResultsView: View {
     let workoutName: String
     let valueUnit: VolumeUnit
-    let oneRepMax: Int?
-    let workoutSets: [WorkoutSet]
-    let topSet: Int = 1
+    let workout: Workout
     var workoutPathOrder: WorkoutPathOrder = .none
     var workoutPathLabel: String = ""
 
@@ -36,27 +34,30 @@ struct WorkoutResultsView: View {
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            let shouldHideWeight = workoutSets.allSatisfy { $0.targetWeight == nil }
+            let shouldHideWeight = workout.sets.allSatisfy { $0.targetWeight == nil }
             WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
 
-            ForEach(Array(workoutSets.enumerated()), id: \.offset) { (index, workoutSet) in
+            ForEach(Array(workout.sets.enumerated()), id: \.offset) { (index, workoutSet) in
                 WorkoutResultRowWithWeight(
                     set: index + 1,
                     targetValue: workoutSet.targetVolume,
                     targetWeight: workoutSet.targetWeight,
-                    oneRepMax: oneRepMax,
-                    value: workoutSets[index].volume,
-                    weight: workoutSets[index].weight
+                    oneRepMax: workout.oneRepMax,
+                    value: workout.sets[index].volume,
+                    weight: workout.sets[index].weight
                 )
             }
-            Divider()
-            HStack(spacing: 8){
-                Text("Top set:")
-                    .font(.system(size: 15))
-                Text(String(topSet))
-                    .font(.system(size: 20, weight: .bold))
+
+            if let topSet = workout.bestSetIndex() {
+                Divider()
+                HStack(spacing: 8){
+                    Text("Top set:")
+                        .font(.system(size: 15))
+                    Text(String(topSet + 1))
+                        .font(.system(size: 20, weight: .bold))
+                }
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
         .frame(maxWidth: .infinity)

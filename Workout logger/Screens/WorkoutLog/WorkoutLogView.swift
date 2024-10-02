@@ -32,8 +32,7 @@ struct WorkoutLogView: View {
                     WorkoutResultsView(
                         workoutName: workout.name,
                         valueUnit: workout.volumeUnit,
-                        oneRepMax: viewModel.workouts[index].oneRepMax,
-                        workoutSets: viewModel.workouts[index].sets,
+                        workout: viewModel.workouts[index],
                         workoutPathOrder: viewModel.workoutProgressLabel != nil ? workoutPathOrder : .none,
                         workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
                     )

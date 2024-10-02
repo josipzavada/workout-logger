@@ -59,33 +59,13 @@ struct WorkoutResultRowWithWeight: View {
 
         // TODO
         if let value {
-            targetValueAchieved = switch targetValue {
-            case .maximum:
-                true
-            case .percentageOfMaximum(let percentage):
-                Double(value) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
-            case .exact(let exactTarget):
-                value >= exactTarget
-            case .interval(let minTarget, let maxTarget):
-                value >= minTarget && value <= maxTarget
-            }
+            targetValueAchieved = targetValue.targetAchieved(value: value, oneRepMax: oneRepMax)
         } else {
             targetValueAchieved = false
         }
 
         if let weight {
-            targetWeightAchieved = switch targetWeight {
-            case .maximum:
-                true
-            case .percentageOfMaximum(let percentage):
-                Double(weight) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
-            case .exact(let exactTarget):
-                weight >= exactTarget
-            case .interval(let minTarget, let maxTarget):
-                weight >= minTarget && weight <= maxTarget
-            case .none:
-                true
-            }
+            targetWeightAchieved = targetWeight?.targetAchieved(value: weight, oneRepMax: oneRepMax) ?? false
         } else {
             targetWeightAchieved = false
         }

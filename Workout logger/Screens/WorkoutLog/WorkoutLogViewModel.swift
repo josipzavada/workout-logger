@@ -103,13 +103,13 @@ class WorkoutLogViewModel {
     func displayEmomWorkout(workoutPlanItem: WorkoutPlanItem) {
         workoutModeViewModel = WorkoutModeFormatter.formatEmomWorkoutMode(workouts: workoutPlanItem.workouts)
         workouts = workoutPlanItem.workouts
-        workoutProgressLabel = "M"
+        workoutProgressLabel = Constants.WorkoutMode.emomWorkoutProgressLabel
     }
 
     func displaySupersetWorkout(workoutPlanItem: WorkoutPlanItem) {
         workoutModeViewModel = WorkoutModeFormatter.formatSupersetWorkoutMode(workouts: workoutPlanItem.workouts)
         workouts = workoutPlanItem.workouts
-        workoutProgressLabel = "A"
+        workoutProgressLabel = Constants.WorkoutMode.supersetsWorkoutProgressLabel
     }
 
     func displayTestWorkout(workoutPlanItem: WorkoutPlanItem) {

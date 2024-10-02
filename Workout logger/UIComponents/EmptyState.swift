@@ -11,7 +11,7 @@ struct EmptyStateView: View {
     let message: String
     var body: some View {
         VStack(spacing: 16) {
-            Image(systemName: "tray")
+            Image(systemName: Constants.SystemImages.tray)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 50, height: 50)

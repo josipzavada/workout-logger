@@ -32,7 +32,7 @@ class WorkoutLogsViewModel: ObservableObject {
             let workoutLogs = try await networkService.fetchWorkoutLogs(planId: planId)
             workoutLogItemViewModels = workoutLogs.compactMap(createWorkoutLogItemViewModel)
         } catch {
-            errorString = "An unknown error occurred"
+            errorString = Constants.General.error
             showErrorAlert = true
         }
         isLoading = false

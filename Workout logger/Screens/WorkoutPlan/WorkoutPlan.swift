@@ -20,7 +20,7 @@ struct WorkoutItem: View {
     var workoutItemButtonLabel: some View {
         HStack {
             workoutAndDescriptionView
-            Image(systemName: "chevron.right")
+            Image(systemName: Constants.SystemImages.chevronRight)
         }
         .padding(16)
         .frame(maxWidth: .infinity)
@@ -37,7 +37,7 @@ struct WorkoutItem: View {
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack {
-                Image(systemName: "repeat")
+                Image(systemName: Constants.SystemImages.repeatText)
                 Text(viewModel.description)
                     .font(.system(size: 15, weight: .semibold))
             }
@@ -67,7 +67,7 @@ struct WorkoutPlan: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.Colors.paper))
-            .navigationTitle("My workout plan")
+            .navigationTitle(Constants.WorkoutPlan.navigationTitle)
         }
         .task {
             await viewModel.fetchPlanItems()
@@ -76,9 +76,9 @@ struct WorkoutPlan: View {
         .environmentObject(navigationPathModel)
         .alert(isPresented: $viewModel.showErrorAlert) {
             Alert(
-                title: Text("Error"),
-                message: Text(viewModel.errorString ?? "An unknown error occurred"),
-                dismissButton: .default(Text("OK"))
+                title: Text(Constants.General.error),
+                message: Text(viewModel.errorString ?? Constants.WorkoutPlan.errorMessage),
+                dismissButton: .default(Text(Constants.General.ok))
             )
         }
     }
@@ -88,11 +88,11 @@ struct WorkoutPlan: View {
     }
 
     var emptyStateView: some View {
-        Text("You currently have no workout plans. Ask your trainer to add some.")
+        Text(Constants.WorkoutPlan.emptyStateMessage)
     }
 
     var errorView: some View {
-        Text("An error occured. Please try again later.")
+        Text(Constants.WorkoutPlan.errorMessage)
     }
 
     var planItems: some View {

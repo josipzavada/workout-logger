@@ -13,7 +13,7 @@ struct WorkoutMaxInputView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("\(title) 1RM")
+            Text("\(title) \(Constants.WorkoutLog.oneRepMaxSuffix)")
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -21,11 +21,11 @@ struct WorkoutMaxInputView: View {
                 .frame(height: 1)
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            Text("Weight")
+            Text(Constants.WorkoutLog.weight)
                 .font(.system(size: 13))
                 .foregroundStyle(Color(.Colors.Text._40))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            WorkoutInputTextField(placeholder: "0", unit: "kg", targetAchieved: .constant(false), value: $maxValue)
+            WorkoutInputTextField(placeholder: "0", unit: Constants.WorkoutLog.kg, targetAchieved: .constant(false), value: $maxValue)
         }
         .padding(16)
         .frame(maxWidth: .infinity)

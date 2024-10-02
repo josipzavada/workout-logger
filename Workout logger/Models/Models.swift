@@ -188,7 +188,7 @@ extension WorkoutTarget {
     func textFieldPlaceholder(oneRepMax: Int?) -> String {
         switch self {
         case .maximum:
-            return "Max"
+            return Constants.WorkoutMode.max
         case .percentageOfMaximum(let percentage):
             return String(format: "%.0f", (Double(percentage) / 100.0) * Double(oneRepMax ?? 0))
         case .exact(let exactValue):

@@ -33,7 +33,7 @@ class WorkoutPlanViewModel: ObservableObject {
             workoutPlanItemsViewModels = workoutPlans.map(createWorkoutPlanItemViewModel)
             isLoading = false
         } catch {
-            errorString = "Something went wrong. Please try again later"
+            errorString = Constants.WorkoutPlan.fetchErrorMessage
             showErrorAlert = true
             print(error) // For debugging purposes
         }

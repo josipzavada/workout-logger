@@ -51,7 +51,7 @@ struct WorkoutResultsView: View {
             if let topSet = workout.bestSetIndex() {
                 Divider()
                 HStack(spacing: 8){
-                    Text("Top set:")
+                    Text(Constants.WorkoutLog.topSet)
                         .font(.system(size: 15))
                     Text(String(topSet + 1))
                         .font(.system(size: 20, weight: .bold))

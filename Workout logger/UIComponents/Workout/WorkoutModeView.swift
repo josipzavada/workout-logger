@@ -22,7 +22,7 @@ struct WorkoutModeView: View {
                 .foregroundStyle(Color(.Colors.paperDark))
             if let target = viewModel.target {
                 HStack {
-                    Image(systemName: "repeat")
+                    Image(systemName: Constants.SystemImages.repeatText)
                     Text(target)
                         .font(.system(size: 15, weight: .semibold))
                 }

@@ -8,7 +8,7 @@
 enum WorkoutModeFormatter {
     static func formatPyramidWorkoutMode(workout: Workout) -> WorkoutModeViewModel {
         let setTargetsString = formatPyramidTarget(workout: workout)
-        let title = "Pyramid: \(workout.name)"
+        let title = "\(Constants.WorkoutMode.pyramid): \(workout.name)"
 
         let workoutPreviews = WorkoutPreviewViewModel(target: nil, name: workout.name)
         return WorkoutModeViewModel(title: title, target: setTargetsString, workoutPreviews: [workoutPreviews])
@@ -28,9 +28,9 @@ enum WorkoutModeFormatter {
             if areAllValueTargetsEqual {
                 switch targetValue {
                 case .maximum:
-                    workoutValueAndWeight += "Max \(targetValueUnit.name)"
+                    workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(targetValueUnit.name)"
                 case .percentageOfMaximum(let percentage):
-                    workoutValueAndWeight += "\(percentage)% 1RM"
+                    workoutValueAndWeight += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
                 case .exact(let exactTarget):
                     workoutValueAndWeight += "\(exactTarget) \(targetValueUnit.name)"
                 case .interval(let minTarget, let maxTarget):
@@ -44,11 +44,11 @@ enum WorkoutModeFormatter {
                 workoutValueAndWeight += " "
                 switch targetWeight {
                 case .maximum:
-                    workoutValueAndWeight += "Max kg"
+                    workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
                 case .exact(let exactTarget):
-                    workoutValueAndWeight += "\(exactTarget) kg"
+                    workoutValueAndWeight += "\(exactTarget) \(Constants.WorkoutLog.kg)"
                 case .interval(let minTarget, let maxTarget):
-                    workoutValueAndWeight += "\(minTarget)-\(maxTarget) kg"
+                    workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
                 case .percentageOfMaximum, .none:
                     break
                 }
@@ -56,18 +56,18 @@ enum WorkoutModeFormatter {
 
             return WorkoutPreviewViewModel(target: workoutValueAndWeight, name: workout.name)
         }
-        return WorkoutModeViewModel(title: "EMOM", target: numberOfRoundsString, workoutPreviews: workoutPreviews)
+        return WorkoutModeViewModel(title: Constants.WorkoutMode.emom, target: numberOfRoundsString, workoutPreviews: workoutPreviews)
     }
 
     static func formatSupersetWorkoutMode(workouts: [Workout]) -> WorkoutModeViewModel {
         let target = formatSupersetTarget(workouts: workouts)
         let workoutPreviews = workouts.map { WorkoutPreviewViewModel(target: nil, name: $0.name) }
-        return WorkoutModeViewModel(title: "Supersets", target: target, workoutPreviews: workoutPreviews)
+        return WorkoutModeViewModel(title: Constants.WorkoutMode.supersets, target: target, workoutPreviews: workoutPreviews)
     }
 
     static func formatTestWorkoutMode(workout: Workout) -> WorkoutModeViewModel {
         let workoutValueAndWeight = formatTestTarget(workout: workout)
-        let title = "\(workout.name) Test"
+        let title = "\(workout.name) \(Constants.WorkoutMode.test)"
         let workoutPreviews = WorkoutPreviewViewModel(target: nil, name: workout.name)
         return WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: [workoutPreviews])
     }
@@ -87,7 +87,7 @@ enum WorkoutModeFormatter {
 
     static func formatEmomTarget(workouts: [Workout]) -> String {
         let numberOfRounds = workouts.map { $0.sets.count }.reduce(0, +)
-        return "\(numberOfRounds) rounds"
+        return "\(numberOfRounds) \(Constants.WorkoutMode.rounds)"
     }
 
     static func formatSupersetTarget(workouts: [Workout]) -> String {
@@ -116,9 +116,9 @@ enum WorkoutModeFormatter {
             valueAndWeightDescription += " "
             switch targetValue {
             case .maximum:
-                valueAndWeightDescription += "Max \(targetValueUnit?.name ?? "")"
+                valueAndWeightDescription += "\(Constants.WorkoutMode.max) \(targetValueUnit?.name ?? "")"
             case .percentageOfMaximum(let percentage):
-                valueAndWeightDescription += "\(percentage)% 1RM"
+                valueAndWeightDescription += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
             case .exact(let exactTarget):
                 valueAndWeightDescription += "\(exactTarget) \(targetValueUnit?.name ?? "")"
             case .interval(let minTarget, let maxTarget):
@@ -132,11 +132,11 @@ enum WorkoutModeFormatter {
             valueAndWeightDescription += " "
             switch targetWeight {
             case .maximum:
-                valueAndWeightDescription += "Max kg"
+                valueAndWeightDescription += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
             case .exact(let exactTarget):
-                valueAndWeightDescription += "\(exactTarget) kg"
+                valueAndWeightDescription += "\(exactTarget) \(Constants.WorkoutLog.kg)"
             case .interval(let minTarget, let maxTarget):
-                valueAndWeightDescription += "\(minTarget)-\(maxTarget) kg"
+                valueAndWeightDescription += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
             case .percentageOfMaximum, .none:
                 break
             }
@@ -156,9 +156,9 @@ enum WorkoutModeFormatter {
         if areAllValueTargetsEqual {
             switch targetValue {
             case .maximum:
-                workoutValueAndWeight += "Max \(targetValueUnit.name)"
+                workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(targetValueUnit.name)"
             case .percentageOfMaximum(let percentage):
-                workoutValueAndWeight += "\(percentage)% 1RM"
+                workoutValueAndWeight += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
             case .exact(let exactTarget):
                 workoutValueAndWeight += "\(exactTarget) \(targetValueUnit.name)"
             case .interval(let minTarget, let maxTarget):
@@ -174,13 +174,13 @@ enum WorkoutModeFormatter {
             }
             switch targetWeight {
             case .maximum:
-                workoutValueAndWeight += "Max kg"
+                workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
             case .exact(let exactTarget):
-                workoutValueAndWeight += "\(exactTarget) kg"
+                workoutValueAndWeight += "\(exactTarget) \(Constants.WorkoutLog.kg)"
             case .interval(let minTarget, let maxTarget):
-                workoutValueAndWeight += "\(minTarget)-\(maxTarget) kg"
+                workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
             case .percentageOfMaximum(let percentage):
-                workoutValueAndWeight += "\(percentage) % 1RM"
+                workoutValueAndWeight += "\(percentage) % \(Constants.WorkoutLog.oneRepMaxSuffix)"
             case .none:
                 break
             }

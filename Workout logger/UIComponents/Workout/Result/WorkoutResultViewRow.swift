@@ -25,7 +25,7 @@ struct WorkoutResultRow: View {
             }
             .frame(maxWidth: .infinity)
 
-            Image(systemName: "checkmark")
+            Image(systemName: Constants.SystemImages.checkmark)
                 .frame(width: 40, height: 40)
                 .background(Color(targetValueAchieved ? .Colors.success : .Colors.neutralG30))
                 .clipShape(.rect(cornerRadius: 8))
@@ -103,7 +103,7 @@ struct WorkoutResultRowWithWeight: View {
 
                 Spacer(minLength: 0)
 
-                Image(systemName: "checkmark")
+                Image(systemName: Constants.SystemImages.checkmark)
                     .frame(width: 40, height: 40)
                     .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
                     .clipShape(.rect(cornerRadius: 8))

@@ -22,7 +22,7 @@ struct WorkoutLogsView: View {
             if viewModel.isLoading {
                 progressView
             } else if viewModel.workoutLogItemViewModels.isEmpty {
-                EmptyStateView(message: "You have no workout logs right now. Tap on Add new to add some.")
+                EmptyStateView(message: Constants.WorkoutLog.emptyStateMessage)
             } else {
                 logItems
             }
@@ -31,7 +31,7 @@ struct WorkoutLogsView: View {
         .safeAreaInset(edge: .bottom) {
             if viewModel.errorString == nil && !viewModel.isLoading {
                 NavigationLink(value: NavigationState.newWorkoutLogView(workoutPlanItem: workoutPlanItem)) {
-                    Text("Add new")
+                    Text(Constants.WorkoutLog.addNew)
                 }
                 .buttonStyle(WorkoutLogButton())
             }
@@ -40,12 +40,12 @@ struct WorkoutLogsView: View {
             await viewModel.fetchWorkoutLogs(planId: workoutPlanItem.id)
         }
         .background(Color(.Colors.paper))
-        .navigationTitle("Logs")
+        .navigationTitle(Constants.WorkoutLog.logs)
         .alert(isPresented: $viewModel.showErrorAlert) {
             Alert(
-                title: Text("Error"),
-                message: Text(viewModel.errorString ?? "An unknown error occurred"),
-                dismissButton: .default(Text("OK"))
+                title: Text(Constants.General.error),
+                message: Text(viewModel.errorString ?? Constants.WorkoutPlan.errorMessage),
+                dismissButton: .default(Text(Constants.General.ok))
             )
         }
     }

@@ -52,12 +52,12 @@ struct NewWorkoutLogView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Save")
+                    Text(Constants.General.save)
                 }
             }
             .buttonStyle(WorkoutLogButton())
-            .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
-                Button("OK") {
+            .alert(Constants.General.error, isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
+                Button(Constants.General.ok) {
                     viewModel.showError = false
                 }
             } message: { errorMessage in
@@ -65,7 +65,7 @@ struct NewWorkoutLogView: View {
             }
         }
         .background(Color(.Colors.paper))
-        .navigationTitle("New log")
+        .navigationTitle(Constants.WorkoutLog.newLog)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

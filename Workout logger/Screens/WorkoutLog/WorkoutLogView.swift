@@ -41,7 +41,7 @@ struct WorkoutLogView: View {
             .padding(12)
         }
         .background(Color(.Colors.paper))
-        .navigationTitle("Log")
+        .navigationTitle(Constants.WorkoutLog.log)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

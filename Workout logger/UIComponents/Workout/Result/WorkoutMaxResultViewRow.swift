@@ -18,18 +18,18 @@ struct WorkoutMaxView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("\(viewModel.title) 1RM")
+            Text("\(viewModel.title) \(Constants.WorkoutLog.oneRepMaxSuffix)")
                 .foregroundStyle(Color(.Colors.Text._100))
                 .font(.system(size: 19, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Divider()
                 .foregroundStyle(Color(.Colors.paperDark))
 
-            Text("Weight")
+            Text(Constants.WorkoutLog.weight)
                 .font(.system(size: 13))
                 .foregroundStyle(Color(.Colors.Text._40))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text("\(viewModel.maxValue) kg")
+            Text("\(viewModel.maxValue) \(Constants.WorkoutLog.kg)")
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)

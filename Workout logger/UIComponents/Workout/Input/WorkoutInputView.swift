@@ -64,7 +64,7 @@ struct WorkoutInputView: View {
             if let topSetIndex {
                 Divider()
                 HStack(spacing: 8){
-                    Text("Top set:")
+                    Text(Constants.WorkoutLog.topSet)
                         .font(.system(size: 15))
                     Text(String(topSetIndex + 1))
                         .font(.system(size: 20, weight: .bold))

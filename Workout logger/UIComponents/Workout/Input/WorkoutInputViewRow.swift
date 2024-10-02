@@ -14,7 +14,7 @@ struct WorkoutInputViewHeader: View {
         HStack(spacing: 8) {
             HStack {
                 VStack {
-                    Text("Sets")
+                    Text(Constants.WorkoutLog.sets)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack {
@@ -24,7 +24,7 @@ struct WorkoutInputViewHeader: View {
             }
             .frame(maxWidth: .infinity)
             if (showWeight) {
-                Text("Weight")
+                Text(Constants.WorkoutLog.weight)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 Spacer()
@@ -65,7 +65,7 @@ struct WorkoutInputRowWithWeight: View {
             .frame(maxWidth: .infinity)
             HStack(spacing: 8) {
                 if targetWeight != nil {
-                    WorkoutInputTextField(placeholder: weightPlaceholder, unit: "kg", targetAchieved: $targetWeightAchieved, value: $weight)
+                    WorkoutInputTextField(placeholder: weightPlaceholder, unit: Constants.WorkoutLog.kg, targetAchieved: $targetWeightAchieved, value: $weight)
                         .onChange(of: weight) {
                             checkIfTargetAchieved()
                         }
@@ -75,7 +75,7 @@ struct WorkoutInputRowWithWeight: View {
                         }
                 }
 
-                Image(systemName: "checkmark")
+                Image(systemName: Constants.SystemImages.checkmark)
                     .frame(width: 40, height: 40)
                     .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
                     .clipShape(.rect(cornerRadius: 8))

@@ -21,7 +21,7 @@ struct WorkoutLogItem: View {
         HStack {
             workoutAndDescriptionView
             Spacer(minLength: 0)
-            Image(systemName: "chevron.right")
+            Image(systemName: Constants.SystemImages.chevronRight)
         }
         .padding(16)
         .background(.white)

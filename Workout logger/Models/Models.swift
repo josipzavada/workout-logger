@@ -12,6 +12,32 @@ enum WorkoutTarget: Hashable {
     case percentageOfMaximum(Int)
     case exact(Int)
     case interval(Int, Int)
+
+    func targetAchieved(value: Int, oneRepMax: Int?) -> Bool {
+        switch self {
+            case .maximum:
+                true
+            case .percentageOfMaximum(let percentage):
+                Double(value) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
+            case .exact(let exactTarget):
+                value >= exactTarget
+            case .interval(let minTarget, let maxTarget):
+                value >= minTarget && value <= maxTarget
+        }
+    }
+
+    func textFieldPlaceholder(oneRepMax: Int?) -> String {
+        switch self {
+        case .maximum:
+            "Max"
+        case .percentageOfMaximum(let percentage):
+            String(format: "%.0f", (Double(percentage) / 100.0) * Double(oneRepMax ?? 0))
+        case .exact(let exactValue):
+            String(exactValue)
+        case .interval(let minTarget, _):
+            String(minTarget)
+        }
+    }
 }
 
 enum WorkoutType: String, Codable, Hashable {

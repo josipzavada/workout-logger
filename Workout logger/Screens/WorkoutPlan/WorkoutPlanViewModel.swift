@@ -16,37 +16,41 @@ struct WorkoutPlanItemViewModel: Identifiable {
 
 @MainActor
 class WorkoutPlanViewModel: ObservableObject {
-
     @Published var isLoading = true
     @Published var errorString: String?
     @Published var workoutPlanItemsViewModels = [WorkoutPlanItemViewModel]()
+    @Published var showErrorAlert = false
+
+    private let networkService = NetworkService.shared
 
     func fetchPlanItems() async {
-        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans") else { return }
         isLoading = true
         errorString = nil
         workoutPlanItemsViewModels = []
-        let request = URLRequest(url: url)
+        
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let workoutPlans = try JSONDecoder().decode([WorkoutPlanItem].self, from: data)
-            workoutPlanItemsViewModels = workoutPlans.map({ workoutPlanItem in
-                let firstWorkout = workoutPlanItem.workouts.first
-                let description = switch workoutPlanItem.type {
-                case .emom:
-                    WorkoutModeFormatter.formatEmomTarget(workouts: workoutPlanItem.workouts)
-                case .pyramid:
-                    firstWorkout != nil ? WorkoutModeFormatter.formatPyramidTarget(workout: firstWorkout!) : ""
-                case .superset:
-                    WorkoutModeFormatter.formatSupersetTarget(workouts: workoutPlanItem.workouts)
-                case .test:
-                    firstWorkout != nil ? WorkoutModeFormatter.formatTestTarget(workout: firstWorkout!) : ""
-                }
-                return WorkoutPlanItemViewModel(id: workoutPlanItem.id, workoutPlanItem: workoutPlanItem, title: workoutPlanItem.type.rawValue.capitalized, description: description)
-            })
+            let workoutPlans = try await networkService.fetchWorkoutPlans()
+            workoutPlanItemsViewModels = workoutPlans.map(createWorkoutPlanItemViewModel)
             isLoading = false
         } catch {
             errorString = "Something went wrong. Please try again later"
+            showErrorAlert = true
+            print(error) // For debugging purposes
         }
+    }
+
+    private func createWorkoutPlanItemViewModel(from workoutPlanItem: WorkoutPlanItem) -> WorkoutPlanItemViewModel {
+        let firstWorkout = workoutPlanItem.workouts.first
+        let description = switch workoutPlanItem.type {
+        case .emom:
+            WorkoutModeFormatter.formatEmomTarget(workouts: workoutPlanItem.workouts)
+        case .pyramid:
+            firstWorkout != nil ? WorkoutModeFormatter.formatPyramidTarget(workout: firstWorkout!) : ""
+        case .superset:
+            WorkoutModeFormatter.formatSupersetTarget(workouts: workoutPlanItem.workouts)
+        case .test:
+            firstWorkout != nil ? WorkoutModeFormatter.formatTestTarget(workout: firstWorkout!) : ""
+        }
+        return WorkoutPlanItemViewModel(id: workoutPlanItem.id, workoutPlanItem: workoutPlanItem, title: workoutPlanItem.type.rawValue.capitalized, description: description)
     }
 }

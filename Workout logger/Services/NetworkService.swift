@@ -34,7 +34,7 @@ class NetworkService {
         }
         
         let (data, _) = try await URLSession.shared.data(from: url)
-        return try decodeWorkoutLogs(from: data)
+        return try workoutLoggerDecoder.decode([WorkoutPlanItem].self, from: data)
     }
     
     private func decodeWorkoutLogs(from data: Data) throws -> [WorkoutPlanItem] {
@@ -48,6 +48,30 @@ class NetworkService {
         decoder.dateDecodingStrategy = .formatted(isoFormatter)
         
         return try decoder.decode([WorkoutPlanItem].self, from: data)
+    }
+    
+    func fetchWorkoutPlans() async throws -> [WorkoutPlanItem] {
+        guard let url = URL(string: "\(baseURL)/plans") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([WorkoutPlanItem].self, from: data)
+    }
+}
+
+private extension NetworkService {
+    var workoutLoggerDecoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+        isoFormatter.locale = Locale(identifier: "en_US_POSIX")
+        isoFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        decoder.dateDecodingStrategy = .formatted(isoFormatter)
+        
+        return decoder
     }
 }
 

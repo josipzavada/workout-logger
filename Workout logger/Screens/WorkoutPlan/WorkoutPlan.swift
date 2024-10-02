@@ -74,6 +74,13 @@ struct WorkoutPlan: View {
         }
         .tint(.black)
         .environmentObject(navigationPathModel)
+        .alert(isPresented: $viewModel.showErrorAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorString ?? "An unknown error occurred"),
+                dismissButton: .default(Text("OK"))
+            )
+        }
     }
 
     var progressView: some View {

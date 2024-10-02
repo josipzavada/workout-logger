@@ -10,29 +10,24 @@ import SwiftUI
 struct WorkoutInputViewHeader: View {
     let volumeUnit: String
     let showWeight: Bool
+    
     var body: some View {
         HStack(spacing: 8) {
-            HStack {
-                VStack {
-                    Text(Constants.WorkoutLog.sets)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                VStack {
-                    Text(volumeUnit.capitalized)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity)
-            if (showWeight) {
-                Text(Constants.WorkoutLog.weight)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            headerText(Constants.WorkoutLog.sets)
+            headerText(volumeUnit.capitalized)
+            if showWeight {
+                headerText(Constants.WorkoutLog.weight)
             } else {
-                Spacer()
-                    .frame(maxWidth: .infinity)
+                Spacer().frame(maxWidth: .infinity)
             }
         }
         .font(.system(size: 13))
         .foregroundStyle(Color(.Colors.Text._40))
+    }
+    
+    private func headerText(_ text: String) -> some View {
+        Text(text)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -54,38 +49,52 @@ struct WorkoutInputRowWithWeight: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            HStack {
-                Text(String(set))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                WorkoutInputTextField(placeholder: targetValue.textFieldPlaceholder(oneRepMax: nil), targetAchieved: $targetValueAchieved, value: $value)
-                    .onChange(of: value) {
-                        checkIfTargetAchieved()
-                    }
-            }
-            .frame(maxWidth: .infinity)
-            HStack(spacing: 8) {
-                if targetWeight != nil {
-                    WorkoutInputTextField(placeholder: weightPlaceholder, unit: Constants.WorkoutLog.kg, targetAchieved: $targetWeightAchieved, value: $weight)
-                        .onChange(of: weight) {
-                            checkIfTargetAchieved()
-                        }
-                        .onChange(of: oneRepMax) {
-                            updateWeightPlaceholder()
-                            checkIfTargetAchieved()
-                        }
+            setAndValueInputs
+            weightAndCheckmark
+        }
+        .onAppear(perform: updateWeightPlaceholder)
+    }
+    
+    private var setAndValueInputs: some View {
+        HStack {
+            Text(String(set))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            WorkoutInputTextField(
+                placeholder: targetValue.textFieldPlaceholder(oneRepMax: nil),
+                targetAchieved: $targetValueAchieved,
+                value: $value
+            )
+            .onChange(of: value) { _ in checkIfTargetAchieved() }
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    private var weightAndCheckmark: some View {
+        HStack(spacing: 8) {
+            if let targetWeight = targetWeight {
+                WorkoutInputTextField(
+                    placeholder: weightPlaceholder,
+                    unit: Constants.WorkoutLog.kg,
+                    targetAchieved: $targetWeightAchieved,
+                    value: $weight
+                )
+                .onChange(of: weight) { _ in checkIfTargetAchieved() }
+                .onChange(of: oneRepMax) { _ in
+                    updateWeightPlaceholder()
+                    checkIfTargetAchieved()
                 }
-
-                Image(systemName: Constants.SystemImages.checkmark)
-                    .frame(width: 40, height: 40)
-                    .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
-                    .clipShape(.rect(cornerRadius: 8))
-
             }
-            .frame(maxWidth: .infinity, alignment: .trailing)
+            
+            checkmarkImage
         }
-        .onAppear {
-            updateWeightPlaceholder()
-        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+    
+    private var checkmarkImage: some View {
+        Image(systemName: Constants.SystemImages.checkmark)
+            .frame(width: 40, height: 40)
+            .background(Color(targetAchieved ? .Colors.success : .Colors.neutralG30))
+            .clipShape(.rect(cornerRadius: 8))
     }
 
     private func updateWeightPlaceholder() {
@@ -127,7 +136,7 @@ struct WorkoutInputTextField: View {
     var body: some View {
         HStack(spacing: 4) {
             TextField(placeholder, value: $value, formatter: NumberFormatter())
-            if let unit {
+            if let unit = unit {
                 Text(unit)
                     .font(.system(size: 13))
                     .foregroundStyle(Color(.Colors.Text._40))
@@ -135,12 +144,20 @@ struct WorkoutInputTextField: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color(targetAchieved ? successTextBackground : .white))
+        .background(backgroundColor)
         .clipShape(.rect(cornerRadius: 8))
         .roundedStrokeOverlay(
             cornerRadius: 8,
-            strokeColor: Color(targetAchieved ? successTextBorderColor : .Colors.neutralG20),
+            strokeColor: strokeColor,
             lineWidth: 2
         )
+    }
+    
+    private var backgroundColor: Color {
+        targetAchieved ? successTextBackground : .white
+    }
+    
+    private var strokeColor: Color {
+        Color(targetAchieved ? successTextBorderColor : .Colors.neutralG20)
     }
 }

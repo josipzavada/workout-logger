@@ -7,33 +7,6 @@
 
 import SwiftUI
 
-struct WorkoutResultRow: View {
-    let targetValue: Int
-    let value: Int
-
-    private let successColor = Color(.Colors.success)
-
-    var body: some View {
-        let targetValueAchieved = value >= targetValue
-        HStack(spacing: 8) {
-            HStack {
-                Text("1")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(String(value))
-                    .foregroundStyle(targetValueAchieved ? .green : .black)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity)
-
-            Image(systemName: Constants.SystemImages.checkmark)
-                .frame(width: 40, height: 40)
-                .background(Color(targetValueAchieved ? .Colors.success : .Colors.neutralG30))
-                .clipShape(.rect(cornerRadius: 8))
-                .frame(maxWidth: .infinity, alignment: .trailing)
-        }
-    }
-}
-
 struct WorkoutResultRowWithWeight: View {
 
     let set: Int
@@ -57,24 +30,9 @@ struct WorkoutResultRowWithWeight: View {
         self.value = value
         self.weight = weight
 
-        // TODO
-        if let value {
-            targetValueAchieved = targetValue.targetAchieved(value: value, oneRepMax: oneRepMax)
-        } else {
-            targetValueAchieved = false
-        }
-
-        if let weight {
-            targetWeightAchieved = targetWeight?.targetAchieved(value: weight, oneRepMax: oneRepMax) ?? false
-        } else {
-            targetWeightAchieved = false
-        }
-
-        if targetWeight == nil {
-            targetAchieved = targetValueAchieved
-        } else {
-            targetAchieved = targetValueAchieved && targetWeightAchieved
-        }
+        targetValueAchieved = value.map { targetValue.targetAchieved(value: $0, oneRepMax: oneRepMax) } ?? false
+        targetWeightAchieved = weight.flatMap { w in targetWeight?.targetAchieved(value: w, oneRepMax: oneRepMax) } ?? false
+        targetAchieved = targetWeight == nil ? targetValueAchieved : (targetValueAchieved && targetWeightAchieved)
     }
 
     var body: some View {

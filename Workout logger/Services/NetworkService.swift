@@ -1,0 +1,33 @@
+import Foundation
+
+class NetworkService {
+    static let shared = NetworkService()
+    
+    private init() {}
+    
+    func addWorkoutLog(workoutPlanItem: WorkoutPlanItem) async throws -> Data {
+        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/\(workoutPlanItem.id)/add-log") else {
+            throw NetworkError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let encoder = JSONEncoder()
+        request.httpBody = try encoder.encode(workoutPlanItem)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+            throw NetworkError.invalidResponse
+        }
+        
+        return data
+    }
+}
+
+enum NetworkError: Error {
+    case invalidURL
+    case invalidResponse
+}

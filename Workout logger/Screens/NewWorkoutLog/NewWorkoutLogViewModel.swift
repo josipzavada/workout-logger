@@ -32,6 +32,7 @@ class NewWorkoutLogViewModel: ObservableObject {
     @Published var oneRepMax: Int?
     @Published var isLoading = false
     @Published var showError = false
+    @Published var errorMessage: String?
 
     init(workoutPlanItem: WorkoutPlanItem) {
         self.workoutPlanItem = workoutPlanItem
@@ -155,33 +156,13 @@ class NewWorkoutLogViewModel: ObservableObject {
     }
 
     func saveTapped() async {
-        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/\(workoutPlanItem.id)/add-log") else {
-            print("Invalid URL")
-            return
-        }
-
         isLoading = true
         showError = false
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let encoder = JSONEncoder()
+        errorMessage = nil
         do {
-            let jsonData = try encoder.encode(workoutPlanItem)
-            request.httpBody = jsonData
-            let (data, response) = try await URLSession.shared.data(for: request)
-            if let httpResponse = response as? HTTPURLResponse {
-                print("Response status code: \(httpResponse.statusCode)")
-            }
-            if let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) {
-                print("Response JSON: \(jsonResponse)")
-            } else {
-                print("JSON decoding failed but here is the response: \(String(data: data, encoding: .utf8))")
-            }
+            _ = try await NetworkService.shared.addWorkoutLog(workoutPlanItem: workoutPlanItem)
         } catch {
-            print("Error: \(error)")
+            errorMessage = error.localizedDescription
             showError = true
         }
         isLoading = false

@@ -12,31 +12,19 @@ enum WorkoutTarget: Hashable {
     case percentageOfMaximum(Int)
     case exact(Int)
     case interval(Int, Int)
+}
 
-    func targetAchieved(value: Int, oneRepMax: Int?) -> Bool {
-        switch self {
-            case .maximum:
-                true
-            case .percentageOfMaximum(let percentage):
-                Double(value) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
-            case .exact(let exactTarget):
-                value >= exactTarget
-            case .interval(let minTarget, let maxTarget):
-                value >= minTarget && value <= maxTarget
-        }
-    }
+struct WorkoutPlanItem: Codable, Hashable {
+    let id: Int
+    let type: WorkoutType
+    let logDate: Date?
+    var workouts: [Workout]
 
-    func textFieldPlaceholder(oneRepMax: Int?) -> String {
-        switch self {
-        case .maximum:
-            "Max"
-        case .percentageOfMaximum(let percentage):
-            String(format: "%.0f", (Double(percentage) / 100.0) * Double(oneRepMax ?? 0))
-        case .exact(let exactValue):
-            String(exactValue)
-        case .interval(let minTarget, _):
-            String(minTarget)
-        }
+    init(id: Int, type: WorkoutType, logDate: Date? = nil, workouts: [Workout]) {
+        self.id = id
+        self.type = type
+        self.logDate = logDate
+        self.workouts = workouts
     }
 }
 
@@ -64,20 +52,6 @@ enum VolumeUnit: String, Codable, Hashable {
     }
 }
 
-struct WorkoutPlanItem: Codable, Hashable {
-    let id: Int
-    let type: WorkoutType
-    let logDate: Date?
-    var workouts: [Workout]
-
-    init(id: Int, type: WorkoutType, logDate: Date? = nil, workouts: [Workout]) {
-        self.id = id
-        self.type = type
-        self.logDate = logDate
-        self.workouts = workouts
-    }
-}
-
 struct Workout: Codable, Hashable {
     let id: Int
     let name: String
@@ -91,31 +65,6 @@ struct Workout: Codable, Hashable {
         self.volumeUnit = volumeUnit
         self.oneRepMax = oneRepMax
         self.sets = sets
-    }
-
-    func bestSetIndex() -> Int? {
-        var bestSetIndex: Int? = nil
-        var highestScore: Int = 0
-
-        for (index, set) in sets.enumerated() {
-            let volumeAchieved = set.volume != nil && set.targetVolume.targetAchieved(value: set.volume!, oneRepMax: oneRepMax)
-            var currentScore: Int? = 0
-
-            if volumeAchieved {
-                if set.targetWeight == nil {
-                    currentScore = set.volume
-                } else {
-                    currentScore = set.weight
-                }
-            }
-
-            if currentScore ?? 0 > highestScore {
-                highestScore = currentScore ?? 0
-                bestSetIndex = index
-            }
-        }
-
-        return bestSetIndex
     }
 }
 
@@ -217,5 +166,62 @@ private struct ApiWorkoutTarget: Codable {
         default:
             return .maximum
         }
+    }
+}
+
+// MARK: - Extensions
+
+extension WorkoutTarget {
+    func targetAchieved(value: Int, oneRepMax: Int?) -> Bool {
+        switch self {
+        case .maximum:
+            return true
+        case .percentageOfMaximum(let percentage):
+            return Double(value) >= (Double(percentage) / 100.0) * Double(oneRepMax ?? 0)
+        case .exact(let exactTarget):
+            return value >= exactTarget
+        case .interval(let minTarget, let maxTarget):
+            return value >= minTarget && value <= maxTarget
+        }
+    }
+
+    func textFieldPlaceholder(oneRepMax: Int?) -> String {
+        switch self {
+        case .maximum:
+            return "Max"
+        case .percentageOfMaximum(let percentage):
+            return String(format: "%.0f", (Double(percentage) / 100.0) * Double(oneRepMax ?? 0))
+        case .exact(let exactValue):
+            return String(exactValue)
+        case .interval(let minTarget, _):
+            return String(minTarget)
+        }
+    }
+}
+
+extension Workout {
+    func bestSetIndex() -> Int? {
+        var bestSetIndex: Int? = nil
+        var highestScore: Int = 0
+
+        for (index, set) in sets.enumerated() {
+            let volumeAchieved = set.volume != nil && set.targetVolume.targetAchieved(value: set.volume!, oneRepMax: oneRepMax)
+            var currentScore: Int? = 0
+
+            if volumeAchieved {
+                if set.targetWeight == nil {
+                    currentScore = set.volume
+                } else {
+                    currentScore = set.weight
+                }
+            }
+
+            if currentScore ?? 0 > highestScore {
+                highestScore = currentScore ?? 0
+                bestSetIndex = index
+            }
+        }
+
+        return bestSetIndex
     }
 }

@@ -56,7 +56,13 @@ struct NewWorkoutLogView: View {
                 }
             }
             .buttonStyle(WorkoutLogButton())
-
+            .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
+                Button("OK") {
+                    viewModel.showError = false
+                }
+            } message: { errorMessage in
+                Text(errorMessage)
+            }
         }
         .background(Color(.Colors.paper))
         .navigationTitle("New log")

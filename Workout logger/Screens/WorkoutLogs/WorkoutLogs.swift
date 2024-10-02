@@ -59,11 +59,12 @@ struct WorkoutLogs: View {
             } else if let errorString = viewModel.errorString {
                 errorView(errorString: errorString)
             } else if viewModel.workoutLogItemViewModels.isEmpty {
-                emptyStateView
+                EmptyStateView(message: "You have no workout logs right now. Tap on Add new to add some.")
             } else {
                 logItems
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .safeAreaInset(edge: .bottom) {
             if viewModel.errorString == nil && !viewModel.isLoading {
                 NavigationLink(value: NavigationState.newWorkoutLogView(workoutPlanItem: workoutPlanItem)) {
@@ -81,10 +82,6 @@ struct WorkoutLogs: View {
 
     var progressView: some View {
         ProgressView()
-    }
-
-    var emptyStateView: some View {
-        Text("You currently have no workout logs. Tap on Add new to add some.")
     }
 
     func errorView(errorString: String) -> some View {

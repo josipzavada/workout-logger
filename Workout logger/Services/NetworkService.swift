@@ -5,8 +5,10 @@ class NetworkService {
     
     private init() {}
     
+    private let baseURL = "https://workout-logger-backend.vercel.app/api"
+    
     func addWorkoutLog(workoutPlanItem: WorkoutPlanItem) async throws -> Data {
-        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/\(workoutPlanItem.id)/add-log") else {
+        guard let url = URL(string: "\(baseURL)/plans/\(workoutPlanItem.id)/add-log") else {
             throw NetworkError.invalidURL
         }
         
@@ -24,6 +26,28 @@ class NetworkService {
         }
         
         return data
+    }
+    
+    func fetchWorkoutLogs(planId: Int) async throws -> [WorkoutPlanItem] {
+        guard let url = URL(string: "\(baseURL)/plans/\(planId)/workout-logs") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try decodeWorkoutLogs(from: data)
+    }
+    
+    private func decodeWorkoutLogs(from data: Data) throws -> [WorkoutPlanItem] {
+        let decoder = JSONDecoder()
+        
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+        isoFormatter.locale = Locale(identifier: "en_US_POSIX")
+        isoFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        decoder.dateDecodingStrategy = .formatted(isoFormatter)
+        
+        return try decoder.decode([WorkoutPlanItem].self, from: data)
     }
 }
 

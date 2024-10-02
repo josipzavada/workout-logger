@@ -56,8 +56,6 @@ struct WorkoutLogs: View {
         Group {
             if viewModel.isLoading {
                 progressView
-            } else if let errorString = viewModel.errorString {
-                errorView(errorString: errorString)
             } else if viewModel.workoutLogItemViewModels.isEmpty {
                 EmptyStateView(message: "You have no workout logs right now. Tap on Add new to add some.")
             } else {
@@ -78,14 +76,17 @@ struct WorkoutLogs: View {
         }
         .background(Color(.Colors.paper))
         .navigationTitle("Logs")
+        .alert(isPresented: $viewModel.showErrorAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorString ?? "An unknown error occurred"),
+                dismissButton: .default(Text("OK"))
+            )
+        }
     }
 
     var progressView: some View {
         ProgressView()
-    }
-
-    func errorView(errorString: String) -> some View {
-        return Text(errorString)
     }
 
     var logItems: some View {

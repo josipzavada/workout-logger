@@ -19,45 +19,36 @@ class WorkoutLogsViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var errorString: String?
     @Published var workoutLogItemViewModels = [WorkoutLogItemViewModel]()
+    @Published var showErrorAlert = false
+    
+    private let networkService = NetworkService.shared
 
     func fetchWorkoutLogs(planId: Int) async {
-        guard let url = URL(string: "https://workout-logger-backend.vercel.app/api/plans/\(planId)/workout-logs") else { return }
         isLoading = true
         errorString = nil
         workoutLogItemViewModels = []
-        let request = URLRequest(url: url)
+        
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let decoder = JSONDecoder()
-
-            let isoFormatter = DateFormatter()
-            isoFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX" // Handles milliseconds
-            isoFormatter.locale = Locale(identifier: "en_US_POSIX")
-            isoFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-
-            // Set the custom date decoding strategy
-            decoder.dateDecodingStrategy = .formatted(isoFormatter)
-
-            let workoutLogs = try decoder.decode([WorkoutPlanItem].self, from: data)
-
-            workoutLogItemViewModels = workoutLogs.compactMap { workoutLog in
-
-                guard let workoutLogDate = workoutLog.logDate else { return nil }
-
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "d.M.yyyy."
-                let formattedDate = dateFormatter.string(from: workoutLogDate)
-
-                let timeFormatter = DateFormatter()
-                timeFormatter.dateFormat = "h:mm a"
-                let formattedTime = timeFormatter.string(from: workoutLogDate)
-
-                return WorkoutLogItemViewModel(title: formattedDate, description: formattedTime, workoutPlanItem: workoutLog)
-            }
+            let workoutLogs = try await networkService.fetchWorkoutLogs(planId: planId)
+            workoutLogItemViewModels = workoutLogs.compactMap(createWorkoutLogItemViewModel)
         } catch {
-            errorString = "Something went wrong. Please try again later"
-            print(error)
+            errorString = "An unknown error occurred"
+            showErrorAlert = true
         }
         isLoading = false
+    }
+
+    private func createWorkoutLogItemViewModel(from workoutLog: WorkoutPlanItem) -> WorkoutLogItemViewModel? {
+        guard let workoutLogDate = workoutLog.logDate else { return nil }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d.M.yyyy."
+        let formattedDate = dateFormatter.string(from: workoutLogDate)
+
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "h:mm a"
+        let formattedTime = timeFormatter.string(from: workoutLogDate)
+
+        return WorkoutLogItemViewModel(title: formattedDate, description: formattedTime, workoutPlanItem: workoutLog)
     }
 }

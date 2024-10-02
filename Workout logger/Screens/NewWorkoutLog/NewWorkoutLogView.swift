@@ -19,9 +19,9 @@ struct NewWorkoutLogView: View {
                     if let workoutPreviewViewModel = viewModel.workoutModeViewModel {
                         WorkoutModeView(viewModel: workoutPreviewViewModel)
                     }
-                    ForEach(Array(viewModel.maxInputs.enumerated()), id: \.offset) { index, maxInputViewModel in
-                        if let maxInputViewModel = maxInputViewModel {
-                            WorkoutMaxInputView(title: maxInputViewModel.title, maxValue: $viewModel.workoutPlanItem.workouts[index].oneRepMax)
+                    ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { index, workout in
+                        if viewModel.shouldShowOneRepMax(for: workout) {
+                            WorkoutMaxInputView(title: workout.name, maxValue: $viewModel.workoutPlanItem.workouts[index].oneRepMax)
                         }
                     }
                     ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { (index, workout) in

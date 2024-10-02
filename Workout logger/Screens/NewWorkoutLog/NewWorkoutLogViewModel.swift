@@ -29,27 +29,12 @@ class NewWorkoutLogViewModel: ObservableObject {
     var workoutModeViewModel: WorkoutModeViewModel?
     @Published var workoutProgressLabel: String?
     @Published var workoutPlanItem: WorkoutPlanItem
-    @Published var maxInputs = [MaxInputViewModel?]()
     @Published var oneRepMax: Int?
     @Published var isLoading = false
     @Published var showError = false
 
     init(workoutPlanItem: WorkoutPlanItem) {
         self.workoutPlanItem = workoutPlanItem
-        maxInputs = workoutPlanItem.workouts.map { workout in
-            if workout.sets.contains(where: {
-                if case .percentageOfMaximum = $0.targetWeight {
-                    return true
-                } else {
-                    return false
-                }
-            })
-            {
-                return MaxInputViewModel(title: workout.name)
-            } else {
-                return nil
-            }
-        }
 
         switch workoutPlanItem.type {
         case .pyramid:
@@ -131,10 +116,6 @@ class NewWorkoutLogViewModel: ObservableObject {
 //        displayEmomWorkout(workoutPlanItem: workoutPlanItem2)
 //        displaySupersetWorkout(workoutPlanItem: workoutPlanItem3)
 //        displayTestWorkout(workoutPlanItem: workoutPlanItem4)
-
-        for workoutIndex in workoutPlanItem.workouts.indices {
-            self.workoutPlanItem.workouts[workoutIndex].oneRepMax = maxInputs[safe: workoutIndex]??.value
-        }
     }
 
     func displayPyramidWorkout(workoutPlanItem: WorkoutPlanItem) {
@@ -161,6 +142,16 @@ class NewWorkoutLogViewModel: ObservableObject {
             return
         }
         workoutModeViewModel = WorkoutModeFormatter.formatTestWorkoutMode(workout: workout)
+    }
+
+    func shouldShowOneRepMax(for workout: Workout) -> Bool {
+        return workout.sets.contains(where: {
+            if case .percentageOfMaximum = $0.targetWeight {
+                return true
+            } else {
+                return false
+            }
+        })
     }
 
     func saveTapped() async {

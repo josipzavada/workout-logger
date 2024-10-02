@@ -24,12 +24,15 @@ struct WorkoutPreviewViewModel: Identifiable {
     let name: String
 }
 
+@MainActor
 class NewWorkoutLogViewModel: ObservableObject {
     var workoutModeViewModel: WorkoutModeViewModel?
     @Published var workoutProgressLabel: String?
     @Published var workoutPlanItem: WorkoutPlanItem
     @Published var maxInputs = [MaxInputViewModel?]()
-    @Published var oneRepMax = 100
+    @Published var oneRepMax: Int?
+    @Published var isLoading = false
+    @Published var showError = false
 
     init(workoutPlanItem: WorkoutPlanItem) {
         self.workoutPlanItem = workoutPlanItem
@@ -166,6 +169,9 @@ class NewWorkoutLogViewModel: ObservableObject {
             return
         }
 
+        isLoading = true
+        showError = false
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -185,6 +191,8 @@ class NewWorkoutLogViewModel: ObservableObject {
             }
         } catch {
             print("Error: \(error)")
+            showError = true
         }
+        isLoading = false
     }
 }

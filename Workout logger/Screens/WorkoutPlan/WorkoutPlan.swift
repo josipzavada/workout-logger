@@ -50,10 +50,10 @@ struct WorkoutItem: View {
 struct WorkoutPlan: View {
 
     @StateObject private var viewModel = WorkoutPlanViewModel()
-    @State var navigationPath = [NavigationState]()
+    @StateObject var navigationPathModel = NavigationPathModel()
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack(path: $navigationPathModel.path) {
             Group {
                 if viewModel.isLoading {
                     progressView
@@ -73,6 +73,7 @@ struct WorkoutPlan: View {
             await viewModel.fetchPlanItems()
         }
         .tint(.black)
+        .environmentObject(navigationPathModel)
     }
 
     var progressView: some View {

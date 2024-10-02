@@ -10,6 +10,7 @@ import SwiftUI
 struct NewWorkoutLogView: View {
 
     @ObservedObject var viewModel: NewWorkoutLogViewModel
+    @EnvironmentObject var navigationPathModel: NavigationPathModel
 
     var body: some View {
         VStack {
@@ -43,9 +44,17 @@ struct NewWorkoutLogView: View {
             Button {
                 Task {
                     await viewModel.saveTapped()
+                    if !viewModel.showError {
+                        navigationPathModel.path.removeLast()
+                    }
                 }
             } label: {
-                Text("Save")
+                if viewModel.isLoading {
+                    ProgressView()
+                        .tint(.white)
+                } else {
+                    Text("Save")
+                }
             }
             .buttonStyle(WorkoutLogButton())
 

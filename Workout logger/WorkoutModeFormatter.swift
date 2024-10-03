@@ -17,44 +17,44 @@ enum WorkoutModeFormatter {
     static func formatEmomWorkoutMode(workouts: [Workout]) -> WorkoutModeViewModel {
         let numberOfRoundsString = formatEmomTarget(workouts: workouts)
         let workoutPreviews = workouts.map { workout in
-            let targetValue = workout.sets.first?.targetVolume
+            let targetVolume = workout.sets.first?.targetVolume
             let targetWeight = workout.sets.first?.targetWeight
-            let targetValueUnit = workout.volumeUnit
+            let targetVolumeUnit = workout.volumeUnit
 
-            let areAllValueTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetValue }
-            let areAllWeightTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetWeight == targetValue }
+            let areAllVolumeTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetVolume == targetVolume }
+            let areAllWeightTargetsEqual = workout.sets.allSatisfy { workoutSet in workoutSet.targetWeight == targetVolume }
 
-            var workoutValueAndWeight = ""
-            if areAllValueTargetsEqual {
-                switch targetValue {
+            var workoutVolumeAndWeight = ""
+            if areAllVolumeTargetsEqual {
+                switch targetVolume {
                 case .maximum:
-                    workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(targetValueUnit.name)"
+                    workoutVolumeAndWeight += "\(Constants.WorkoutMode.max) \(targetVolumeUnit.name)"
                 case .percentageOfMaximum(let percentage):
-                    workoutValueAndWeight += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
+                    workoutVolumeAndWeight += "\(percentage)% \(Constants.WorkoutLog.oneRepMaxSuffix)"
                 case .exact(let exactTarget):
-                    workoutValueAndWeight += "\(exactTarget) \(targetValueUnit.name)"
+                    workoutVolumeAndWeight += "\(exactTarget) \(targetVolumeUnit.name)"
                 case .interval(let minTarget, let maxTarget):
-                    workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(targetValueUnit.name)"
+                    workoutVolumeAndWeight += "\(minTarget)-\(maxTarget) \(targetVolumeUnit.name)"
                 case .none:
                     break
                 }
             }
 
             if areAllWeightTargetsEqual {
-                workoutValueAndWeight += " "
+                workoutVolumeAndWeight += " "
                 switch targetWeight {
                 case .maximum:
-                    workoutValueAndWeight += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
+                    workoutVolumeAndWeight += "\(Constants.WorkoutMode.max) \(Constants.WorkoutLog.kg)"
                 case .exact(let exactTarget):
-                    workoutValueAndWeight += "\(exactTarget) \(Constants.WorkoutLog.kg)"
+                    workoutVolumeAndWeight += "\(exactTarget) \(Constants.WorkoutLog.kg)"
                 case .interval(let minTarget, let maxTarget):
-                    workoutValueAndWeight += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
+                    workoutVolumeAndWeight += "\(minTarget)-\(maxTarget) \(Constants.WorkoutLog.kg)"
                 case .percentageOfMaximum, .none:
                     break
                 }
             }
 
-            return WorkoutPreviewViewModel(target: workoutValueAndWeight, name: workout.name)
+            return WorkoutPreviewViewModel(target: workoutVolumeAndWeight, name: workout.name)
         }
         return WorkoutModeViewModel(title: Constants.WorkoutMode.emom, target: numberOfRoundsString, workoutPreviews: workoutPreviews)
     }
@@ -66,10 +66,10 @@ enum WorkoutModeFormatter {
     }
 
     static func formatTestWorkoutMode(workout: Workout) -> WorkoutModeViewModel {
-        let workoutValueAndWeight = formatTestTarget(workout: workout)
+        let workoutVolumeAndWeight = formatTestTarget(workout: workout)
         let title = "\(workout.name) \(Constants.WorkoutMode.test)"
         let workoutPreviews = WorkoutPreviewViewModel(target: nil, name: workout.name)
-        return WorkoutModeViewModel(title: title, target: workoutValueAndWeight, workoutPreviews: [workoutPreviews])
+        return WorkoutModeViewModel(title: title, target: workoutVolumeAndWeight, workoutPreviews: [workoutPreviews])
     }
 
     static func formatPyramidTarget(workout: Workout) -> String {
@@ -97,15 +97,15 @@ enum WorkoutModeFormatter {
         var description = areAllSetsEqual ? "\(workoutsSetsCount.first ?? 0) x " : ""
 
         let firstWorkout = workouts.first
-        let targetValue = firstWorkout?.sets.first?.targetVolume
+        let targetVolume = firstWorkout?.sets.first?.targetVolume
         let targetWeight = firstWorkout?.sets.first?.targetWeight
-        let targetValueUnit = firstWorkout?.volumeUnit
+        let targetVolumeUnit = firstWorkout?.volumeUnit
 
-        let areAllValueTargetsEqual = workouts.allSatisfy { $0.sets.allSatisfy { $0.targetVolume == targetValue } }
+        let areAllVolumeTargetsEqual = workouts.allSatisfy { $0.sets.allSatisfy { $0.targetVolume == targetVolume } }
         let areAllWeightTargetsEqual = workouts.allSatisfy { $0.sets.allSatisfy { $0.targetWeight == targetWeight } }
 
-        if areAllValueTargetsEqual {
-            description += formatTargetValue(targetValue, unit: targetValueUnit?.name ?? "")
+        if areAllVolumeTargetsEqual {
+            description += formatTargetVolume(targetVolume, unit: targetVolumeUnit?.name ?? "")
         }
         if areAllWeightTargetsEqual {
             description += " " + formatTargetWeight(targetWeight)
@@ -115,16 +115,16 @@ enum WorkoutModeFormatter {
     }
 
     static func formatTestTarget(workout: Workout) -> String {
-        let targetValue = workout.sets.first?.targetVolume
+        let targetVolume = workout.sets.first?.targetVolume
         let targetWeight = workout.sets.first?.targetWeight
-        let targetValueUnit = workout.volumeUnit
+        let targetVolumeUnit = workout.volumeUnit
 
-        let areAllValueTargetsEqual = workout.sets.allSatisfy { $0.targetVolume == targetValue }
+        let areAllVolumeTargetsEqual = workout.sets.allSatisfy { $0.targetVolume == targetVolume }
         let areAllWeightTargetsEqual = workout.sets.allSatisfy { $0.targetWeight == targetWeight }
 
         var description = "\(workout.sets.count) x "
-        if areAllValueTargetsEqual {
-            description += formatTargetValue(targetValue, unit: targetValueUnit.name)
+        if areAllVolumeTargetsEqual {
+            description += formatTargetVolume(targetVolume, unit: targetVolumeUnit.name)
         }
         if areAllWeightTargetsEqual {
             description += (description.hasSuffix("x ") ? "" : " @ ") + formatTargetWeight(targetWeight)
@@ -133,8 +133,8 @@ enum WorkoutModeFormatter {
         return description.trimmingCharacters(in: .whitespaces)
     }
 
-    static func formatTargetValue(_ targetValue: WorkoutTarget?, unit: String) -> String {
-        switch targetValue {
+    static func formatTargetVolume(_ targetVolume: WorkoutTarget?, unit: String) -> String {
+        switch targetVolume {
         case .maximum:
             return "\(Constants.WorkoutMode.max) \(unit)"
         case .percentageOfMaximum(let percentage):

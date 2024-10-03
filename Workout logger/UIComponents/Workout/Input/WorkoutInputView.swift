@@ -13,7 +13,7 @@ enum WorkoutPathOrder {
 
 struct WorkoutInputView: View {
     let workoutName: String
-    let valueUnit: VolumeUnit
+    let volumeUnit: VolumeUnit
     @Binding var workout: Workout
     @State private var topSetIndex: Int? = nil
 
@@ -37,15 +37,15 @@ struct WorkoutInputView: View {
             
             Divider().foregroundStyle(Color(.Colors.paperDark))
 
-            WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
+            WorkoutInputViewHeader(volumeUnit: volumeUnit.name, showWeight: !shouldHideWeight)
 
             ForEach(Array(workout.sets.enumerated()), id: \.offset) { index, workoutSet in
                 WorkoutInputRowWithWeight(
                     set: index + 1,
-                    targetValue: workoutSet.targetVolume,
+                    targetVolume: workoutSet.targetVolume,
                     targetWeight: workoutSet.targetWeight,
                     oneRepMax: $workout.oneRepMax,
-                    value: $workout.sets[index].volume,
+                    volume: $workout.sets[index].volume,
                     weight: $workout.sets[index].weight
                 )
             }

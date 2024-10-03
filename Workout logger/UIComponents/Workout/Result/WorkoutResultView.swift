@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WorkoutResultsView: View {
     let workoutName: String
-    let valueUnit: VolumeUnit
+    let volumeUnit: VolumeUnit
     let workout: Workout
     var workoutPathOrder: WorkoutPathOrder = .none
     var workoutPathLabel: String = ""
@@ -32,15 +32,15 @@ struct WorkoutResultsView: View {
             Divider()
                 .background(Color(.Colors.paperDark))
 
-            WorkoutInputViewHeader(volumeUnit: valueUnit.name, showWeight: !shouldHideWeight)
+            WorkoutInputViewHeader(volumeUnit: volumeUnit.name, showWeight: !shouldHideWeight)
 
             ForEach(Array(workout.sets.enumerated()), id: \.offset) { index, workoutSet in
                 WorkoutResultRowWithWeight(
                     set: index + 1,
-                    targetValue: workoutSet.targetVolume,
+                    targetVolume: workoutSet.targetVolume,
                     targetWeight: workoutSet.targetWeight,
                     oneRepMax: workout.oneRepMax,
-                    value: workout.sets[index].volume,
+                    volume: workout.sets[index].volume,
                     weight: workout.sets[index].weight
                 )
             }

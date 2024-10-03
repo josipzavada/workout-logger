@@ -57,7 +57,7 @@ struct NewWorkoutLogView: View {
         ForEach(Array(viewModel.workoutPlanItem.workouts.enumerated()), id: \.offset) { (index, workout) in
             WorkoutInputView(
                 workoutName: workout.name,
-                valueUnit: workout.volumeUnit,
+                volumeUnit: workout.volumeUnit,
                 workout: $viewModel.workoutPlanItem.workouts[index],
                 workoutPathOrder: workoutPathOrder(for: index),
                 workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"

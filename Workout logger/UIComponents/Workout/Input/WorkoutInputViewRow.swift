@@ -33,15 +33,15 @@ struct WorkoutInputViewHeader: View {
 
 struct WorkoutInputRowWithWeight: View {
     let set: Int
-    let targetValue: WorkoutTarget
+    let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?
     @Binding var oneRepMax: Int?
-    @Binding var value: Int?
+    @Binding var volume: Int?
     @Binding var weight: Int?
 
     @State private var targetAchieved = false
     @State private var targetWeightAchieved = false
-    @State private var targetValueAchieved = false
+    @State private var targetVolumeAchieved = false
 
     @State private var weightPlaceholder = ""
 
@@ -49,22 +49,22 @@ struct WorkoutInputRowWithWeight: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            setAndValueInputs
+            setAndVolumeInputs
             weightAndCheckmark
         }
         .onAppear(perform: updateWeightPlaceholder)
     }
     
-    private var setAndValueInputs: some View {
+    private var setAndVolumeInputs: some View {
         HStack {
             Text(String(set))
                 .frame(maxWidth: .infinity, alignment: .leading)
             WorkoutInputTextField(
-                placeholder: targetValue.textFieldPlaceholder(oneRepMax: nil),
-                targetAchieved: $targetValueAchieved,
-                value: $value
+                placeholder: targetVolume.textFieldPlaceholder(oneRepMax: nil),
+                targetAchieved: $targetVolumeAchieved,
+                value: $volume
             )
-            .onChange(of: value) { checkIfTargetAchieved() }
+            .onChange(of: volume) { checkIfTargetAchieved() }
         }
         .frame(maxWidth: .infinity)
     }
@@ -104,10 +104,10 @@ struct WorkoutInputRowWithWeight: View {
     // TODO
     private func checkIfTargetAchieved() {
 
-        if let value {
-            targetValueAchieved = targetValue.targetAchieved(value: value, oneRepMax: oneRepMax)
+        if let volume {
+            targetVolumeAchieved = targetVolume.targetAchieved(value: volume, oneRepMax: oneRepMax)
         } else {
-            targetValueAchieved = false
+            targetVolumeAchieved = false
         }
 
         if let weight {
@@ -117,9 +117,9 @@ struct WorkoutInputRowWithWeight: View {
         }
 
         if targetWeight == nil {
-            targetAchieved = targetValueAchieved
+            targetAchieved = targetVolumeAchieved
         } else {
-            targetAchieved = targetValueAchieved && targetWeightAchieved
+            targetAchieved = targetVolumeAchieved && targetWeightAchieved
         }
     }
 }

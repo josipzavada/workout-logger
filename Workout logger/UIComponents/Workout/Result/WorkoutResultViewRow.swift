@@ -9,26 +9,26 @@ import SwiftUI
 
 struct WorkoutResultRowWithWeight: View {
     let set: Int
-    let targetValue: WorkoutTarget
+    let targetVolume: WorkoutTarget
     let targetWeight: WorkoutTarget?
     let oneRepMax: Int?
-    let value: Int?
+    let volume: Int?
     let weight: Int?
 
     var body: some View {
         HStack(spacing: 8) {
-            setAndValueView
+            setAndVolumeView
             weightAndCheckmarkView
         }
     }
 
-    private var setAndValueView: some View {
+    private var setAndVolumeView: some View {
         HStack {
             Text(String(set))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            if let value {
-                Text(String(value))
-                    .foregroundColor(targetValueAchieved ? .green : .black)
+            if let volume {
+                Text(String(volume))
+                    .foregroundColor(targetVolumeAchieved ? .green : .black)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 Spacer()
@@ -53,10 +53,10 @@ struct WorkoutResultRowWithWeight: View {
     }
 
     private var targetAchieved: Bool {
-        targetWeight == nil ? targetValueAchieved : (targetValueAchieved && targetWeightAchieved)
+        targetWeight == nil ? targetVolumeAchieved : (targetVolumeAchieved && targetWeightAchieved)
     }
-    private var targetValueAchieved: Bool {
-        value.map { targetValue.targetAchieved(value: $0, oneRepMax: oneRepMax) } ?? false
+    private var targetVolumeAchieved: Bool {
+        volume.map { targetVolume.targetAchieved(value: $0, oneRepMax: oneRepMax) } ?? false
     }
     private var targetWeightAchieved: Bool {
         weight.flatMap { w in targetWeight?.targetAchieved(value: w, oneRepMax: oneRepMax) } ?? false

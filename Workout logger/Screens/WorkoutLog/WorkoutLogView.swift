@@ -47,7 +47,7 @@ struct WorkoutLogView: View {
         ForEach(Array(viewModel.workouts.enumerated()), id: \.offset) { index, workout in
             WorkoutResultsView(
                 workoutName: workout.name,
-                valueUnit: workout.volumeUnit,
+                volumeUnit: workout.volumeUnit,
                 workout: workout,
                 workoutPathOrder: workoutPathOrder(for: index),
                 workoutPathLabel: workoutPathLabel(for: index)

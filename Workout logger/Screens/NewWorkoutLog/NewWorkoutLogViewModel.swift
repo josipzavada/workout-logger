@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-struct MaxInputViewModel {
-    let title: String
-    var value: Int?
-}
-
 struct WorkoutModeViewModel {
     let title: String
     let target: String?

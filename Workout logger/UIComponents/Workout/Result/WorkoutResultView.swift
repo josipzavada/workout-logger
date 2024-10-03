@@ -11,13 +11,13 @@ struct WorkoutResultsView: View {
     let workoutName: String
     let volumeUnit: VolumeUnit
     let workout: Workout
-    var workoutPathOrder: WorkoutPathOrder = .none
+    var isLastInWorkoutPath: Bool?
     var workoutPathLabel: String = ""
 
     var body: some View {
         HStack(spacing: 4) {
             inputCard
-            if workoutPathOrder != .none {
+            if isLastInWorkoutPath != nil {
                 workoutPath
             }
         }
@@ -72,7 +72,7 @@ struct WorkoutResultsView: View {
                 .background(Color(.Colors.paperDark))
                 .clipShape(Circle())
             
-            if workoutPathOrder != .last {
+            if !(isLastInWorkoutPath ?? true) {
                 dottedLine
             } else {
                 Color.clear.frame(width: 1)

@@ -7,23 +7,19 @@
 
 import SwiftUI
 
-enum WorkoutPathOrder {
-    case first, last, middle, none
-}
-
 struct WorkoutInputView: View {
     let workoutName: String
     let volumeUnit: VolumeUnit
     @Binding var workout: Workout
     @State private var topSetIndex: Int? = nil
 
-    var workoutPathOrder: WorkoutPathOrder = .none
+    var isLastInWorkoutPath: Bool? = nil
     var workoutPathLabel: String = ""
 
     var body: some View {
         HStack(spacing: 4) {
             inputCard
-            if workoutPathOrder != .none {
+            if isLastInWorkoutPath != nil {
                 workoutPath
             }
         }
@@ -78,7 +74,7 @@ struct WorkoutInputView: View {
                 .background(Color(.Colors.paperDark))
                 .clipShape(Circle())
 
-            if workoutPathOrder != .last {
+            if !(isLastInWorkoutPath ?? true) {
                 dottedLine
             } else {
                 Color.clear.frame(width: 1)

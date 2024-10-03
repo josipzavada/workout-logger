@@ -59,16 +59,16 @@ struct NewWorkoutLogView: View {
                 workoutName: workout.name,
                 volumeUnit: workout.volumeUnit,
                 workout: $viewModel.workoutPlanItem.workouts[index],
-                workoutPathOrder: workoutPathOrder(for: index),
+                isLastInWorkoutPath: isLastInWorkoutPath(for: index),
                 workoutPathLabel: "\(viewModel.workoutProgressLabel ?? "")\(index + 1)"
             )
         }
     }
     
-    private func workoutPathOrder(for index: Int) -> WorkoutPathOrder {
+    private func isLastInWorkoutPath(for index: Int) -> Bool? {
         viewModel.workoutProgressLabel != nil
-            ? WorkoutModeFormatter.workoutPathOrder(index: index, numberOfWorkouts: viewModel.workoutPlanItem.workouts.count)
-            : .none
+            ? WorkoutModeFormatter.isLastInWorkoutPath(index: index, numberOfWorkouts: viewModel.workoutPlanItem.workouts.count)
+            : nil
     }
     
     private var saveButton: some View {

@@ -163,13 +163,7 @@ enum WorkoutModeFormatter {
         }
     }
 
-    static func workoutPathOrder(index: Int, numberOfWorkouts: Int) -> WorkoutPathOrder {
-        if index == 0 {
-            return WorkoutPathOrder.first
-        } else if index == numberOfWorkouts - 1 {
-            return WorkoutPathOrder.last
-        } else {
-            return WorkoutPathOrder.middle
-        }
+    static func isLastInWorkoutPath(index: Int, numberOfWorkouts: Int) -> Bool {
+        return index == (numberOfWorkouts - 1) || numberOfWorkouts <= 1
     }
 }

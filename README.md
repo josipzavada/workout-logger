@@ -4,6 +4,9 @@ This is an iOS app designed for tracking workout plans and logging progress. The
 
 The backend is deployed on Vercel, so no local setup is needed for the backend.
 
+## Video demo
+A video demo is available at the root directory of this repository.
+
 ## Requirements
 
 - Xcode 16

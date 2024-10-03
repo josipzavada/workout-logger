@@ -44,7 +44,7 @@ class WorkoutLogsViewModel: ObservableObject {
             let workoutLogs = try await networkService.fetchWorkoutLogs(planId: planId)
             workoutLogItemViewModels = workoutLogs.compactMap(createWorkoutLogItemViewModel)
         } catch {
-            errorString = Constants.General.error
+            errorString = Constants.WorkoutPlan.fetchErrorMessage
             showErrorAlert = true
         }
         isLoading = false

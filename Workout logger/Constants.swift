@@ -1,31 +1,31 @@
-struct Constants {
-    struct General {
+enum Constants {
+    enum General {
         static let ok = "OK"
         static let error = "Error"
         static let save = "Save"
     }
     
-    struct WorkoutPlan {
+    enum WorkoutPlan {
         static let navigationTitle = "My workout plan"
         static let emptyStateMessage = "You currently have no workout plans. Ask your trainer to add some."
         static let errorMessage = "An error occurred. Please try again later."
         static let fetchErrorMessage = "Something went wrong. Please try again later"
     }
     
-    struct WorkoutLog {
+    enum WorkoutLog {
         static let oneRepMaxSuffix = "1RM"
         static let weight = "Weight"
         static let kg = "kg"
         static let newLog = "New log"
         static let log = "Log"
         static let logs = "Logs"
-        static let emptyStateMessage = "You currently have no workouts. Ask your trainer to add some."
+        static let emptyStateMessage = "You currently have no workouts. Click on Add new to add some"
         static let addNew = "Add new"
         static let topSet = "Top set:"
         static let sets = "Sets"
     }
     
-    struct WorkoutMode {
+    enum WorkoutMode {
         static let pyramid = "Pyramid"
         static let emom = "EMOM"
         static let supersets = "Supersets"
@@ -36,7 +36,7 @@ struct Constants {
         static let supersetsWorkoutProgressLabel = "A"
     }
     
-    struct SystemImages {
+    enum SystemImages {
         static let chevronRight = "chevron.right"
         static let repeatText = "repeat"
         static let tray = "tray"

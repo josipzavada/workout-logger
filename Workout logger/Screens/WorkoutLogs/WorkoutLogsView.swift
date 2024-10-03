@@ -7,19 +7,6 @@
 
 import SwiftUI
 
-// Define a custom environment key
-struct RefreshWorkoutLogsKey: EnvironmentKey {
-    static let defaultValue: Binding<Bool> = .constant(false)
-}
-
-// Extend EnvironmentValues to include our custom key
-extension EnvironmentValues {
-    var refreshWorkoutLogs: Binding<Bool> {
-        get { self[RefreshWorkoutLogsKey.self] }
-        set { self[RefreshWorkoutLogsKey.self] = newValue }
-    }
-}
-
 struct WorkoutLogsView: View {
     private let workoutPlanItem: WorkoutPlanItem
     @StateObject private var viewModel = WorkoutLogsViewModel()
@@ -63,6 +50,7 @@ struct WorkoutLogsView: View {
             NavigationLink(value: NavigationState.newWorkoutLogView(workoutPlanItem: workoutPlanItem)) {
                 Text(Constants.WorkoutLog.addNew)
             }
+            .background(Color(.Colors.paper))
             .buttonStyle(WorkoutLogButton())
         }
     }
@@ -86,7 +74,3 @@ struct WorkoutLogsView: View {
         )
     }
 }
-
-//#Preview {
-//    WorkoutLogs(planId: 2)
-//}

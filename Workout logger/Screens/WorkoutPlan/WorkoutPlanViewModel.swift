@@ -16,7 +16,7 @@ struct WorkoutPlanItemViewModel: Identifiable {
 
 @MainActor
 class WorkoutPlanViewModel: ObservableObject {
-    @Published private(set) var isLoading = false
+    @Published private(set) var isLoading = true
     @Published private(set) var errorString: String?
     @Published private(set) var workoutPlanItemsViewModels = [WorkoutPlanItemViewModel]()
     @Published var showErrorAlert = false
